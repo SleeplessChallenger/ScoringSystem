@@ -1,0 +1,18 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: startscoring
+  datasource:
+    username: 'sleeplesschallenger'
+    password: 'superSecret'
+    url: jdbc:postgresql://localhost:5432/postgres-start-scoring-db
+    jpa:
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.PostgreSQLDialect
+          format_sql: 'true'
+      hibernate:
+        ddl-auto: update
+      show-sql: 'true'

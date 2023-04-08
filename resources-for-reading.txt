@@ -1,0 +1,6 @@
+
+1. https://medium.com/@caysever/docker-compose-network-b86e424fad82
+2. https://www.docker.com/blog/understanding-docker-networking-drivers-use-cases/
+3. https://stackoverflow.com/questions/52587359/error-service-xxx-uses-an-undefined-network-xxx
+4. https://towardsdatascience.com/how-to-run-postgresql-and-pgadmin-using-docker-3a6a8ae918b5
+5. https://www.pintonista.com/connecting-pgadmin-to-postgres-container/
