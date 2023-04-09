@@ -1,9 +1,11 @@
 package com.startscoring.process.service;
 
-import com.startscoring.process.dto.ApplicantData;
-import com.startscoring.process.dto.Customer;
-import com.startscoring.process.persistence.CustomerEntity;
-import com.startscoring.process.persistence.CustomerRepository;
+import com.startscoring.process.dto.Applicant;
+import com.startscoring.process.dto.Deposit;
+import com.startscoring.process.persistence.customer.ApplicantEntity;
+import com.startscoring.process.persistence.customer.ApplicantRepository;
+import com.startscoring.process.persistence.deposit.DepositEntity;
+import com.startscoring.process.persistence.deposit.DepositRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,17 +15,25 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class StartScoringService {
 
-    private final CustomerRepository customerRepository;
+    private final ApplicantRepository applicantRepository;
+    private final DepositRepository depositRepository;
 
-    public void registerApplicant(ApplicantData applicantData) {
-        final Customer customer = applicantData.getCustomer();
-
-        final CustomerEntity customerEntity = CustomerEntity.builder()
-                .firstName(customer.getFirstName())
-                .lastName(customer.getLastName())
-                .middleName(customer.getMiddleName())
-                .age(customer.getAge())
+    public void registerApplicant(Applicant applicant) {
+        final ApplicantEntity applicantEntity = ApplicantEntity.builder()
+                .firstName(applicant.getFirstName())
+                .lastName(applicant.getLastName())
+                .middleName(applicant.getMiddleName())
+                .age(applicant.getAge())
                 .build();
-        customerRepository.save(customerEntity);
+        applicantRepository.save(applicantEntity);
+    }
+
+    public void registerDeposit(Deposit deposit) {
+        final DepositEntity depositEntity = DepositEntity.builder()
+                .depositType(deposit.getDepositType())
+                .depositPrice(deposit.getDepositPrice())
+                .depositAge(deposit.getDepositAge())
+                .build();
+        depositRepository.save(depositEntity);
     }
 }

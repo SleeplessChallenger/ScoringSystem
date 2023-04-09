@@ -1,6 +1,6 @@
 package com.startscoring.process.dto;
 
-import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,14 +11,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApplicantData {
-
-    // TODO: later we will check salary, credit score and so on
-
-    @Valid
+public class Applicant {
+    @NotBlank
+    private String id;
+    @NotBlank
+    private String firstName;
+    @NotBlank
+    private String lastName;
+    private String middleName;
     @NotNull
-    private Customer customer;
-    @Valid
-    @NotNull
-    private Deposit deposit;
+    private Integer age;
 }

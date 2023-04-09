@@ -1,6 +1,6 @@
 package com.startscoring.process.controller;
 
-import com.startscoring.process.dto.ApplicantData;
+import com.startscoring.process.dto.Application;
 import com.startscoring.process.service.StartScoringService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -21,11 +21,14 @@ public class StartScoringController {
 
     // TODO: add ControllerAdvice maybe for all services at once
     // TODO: check whether we need @Valid in Controller
+    // TODO: one applicant may have multiple deposits => keep this in mind
+    // TODO: use liquibase
     @PostMapping
-    public ResponseEntity<?> acceptScoring(@RequestBody @Valid ApplicantData applicantData) {
-        final String customerId = applicantData.getCustomer().getId();
+    public ResponseEntity<?> acceptScoring(@RequestBody @Valid Application application) {
+        final String customerId = application.getApplicant().getId();
         log.info("Accepted request from customer = {}", customerId);
-        startScoringService.registerApplicant(applicantData);
+        startScoringService.registerApplicant(application.getApplicant());
+        startScoringService.registerDeposit(application.getDeposit());
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(String.format("Accepted request from customer = %s", customerId));
