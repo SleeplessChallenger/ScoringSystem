@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -23,10 +24,12 @@ public class ApplicantEntity {
     )
     private Integer id;
 
+    private String applicantSystemId;
     private String firstName;
     private String lastName;
     private String middleName;
     private Integer age;
+    private LocalDateTime createdAt;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "applicant")
     private List<DepositEntity> deposit;

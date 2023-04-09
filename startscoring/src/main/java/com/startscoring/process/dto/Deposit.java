@@ -7,15 +7,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Deposit {
+    @NotNull
+    private String depositId;
     @NotBlank
     private String depositType;
     @NotNull
-    private Integer depositPrice;
+    private BigDecimal depositPrice;
     @NotNull
     private Integer depositAge;
 }

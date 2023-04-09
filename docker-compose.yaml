@@ -1,5 +1,19 @@
 services:
-  postgres:
+  postgres-checks:
+    container_name: postgres-initial-checks
+    image: postgres
+    environment:
+      POSTGRES_USER: sleeplesschallenger
+      POSTGRES_PASSWORD: superSecret
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5435:5432"
+    networks:
+      - postgres-scoring
+    restart: unless-stopped
+  postgres-start:
     container_name: postgres-start-scoring
     image: postgres
     environment:
@@ -11,7 +25,7 @@ services:
     ports:
       - "5434:5432"
     networks:
-      - postgres-start-scoring
+      - postgres-scoring
     restart: unless-stopped
   pgadmin:
     container_name: pgadmin-start-scoring
@@ -25,11 +39,11 @@ services:
     ports:
       - "5050:80"
     networks:
-      - postgres-start-scoring
+      - postgres-scoring
     restart: unless-stopped
 
 networks:
-  postgres-start-scoring:
+  postgres-scoring:
     driver: bridge
 
 volumes:

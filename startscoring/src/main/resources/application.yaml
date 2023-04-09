@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: startscoring
+    name: start-scoring
   datasource:
     username: 'sleeplesschallenger'
     password: 'superSecret'
