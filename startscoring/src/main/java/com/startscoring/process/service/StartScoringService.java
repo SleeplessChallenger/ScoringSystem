@@ -2,6 +2,7 @@ package com.startscoring.process.service;
 
 import com.startscoring.process.dto.ApplicantData;
 import com.startscoring.process.dto.Customer;
+import com.startscoring.process.persistence.CustomerEntity;
 import com.startscoring.process.persistence.CustomerRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,13 @@ public class StartScoringService {
 
     public void registerApplicant(ApplicantData applicantData) {
         final Customer customer = applicantData.getCustomer();
-        customerRepository.save(customer);
+
+        final CustomerEntity customerEntity = CustomerEntity.builder()
+                .firstName(customer.getFirstName())
+                .lastName(customer.getLastName())
+                .middleName(customer.getMiddleName())
+                .age(customer.getAge())
+                .build();
+        customerRepository.save(customerEntity);
     }
 }
