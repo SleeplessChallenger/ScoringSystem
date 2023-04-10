@@ -1,0 +1,18 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: initial-checks
+  datasource:
+    username: 'sleeplesschallenger'
+    password: 'superSecret'
+    url: jdbc:postgresql://localhost:5435/initial-checks-db
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: 'true'
+    hibernate:
+      ddl-auto: update
+    show-sql: 'true'
