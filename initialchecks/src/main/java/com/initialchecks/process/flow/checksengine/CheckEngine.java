@@ -1,8 +1,8 @@
-package com.initialchecks.process.checksengine;
+package com.initialchecks.process.flow.checksengine;
 
-import com.initialchecks.process.checkactions.CheckAction;
-import com.initialchecks.process.checkactions.ErrorAction;
-import com.initialchecks.process.checksflow.CheckFlow;
+import com.initialchecks.process.flow.checkactions.CheckAction;
+import com.initialchecks.process.flow.checkactions.ErrorAction;
+import com.initialchecks.process.flow.checksflow.CheckFlow;
 import com.initialchecks.process.dto.ApplicationCheck;
 import kotlin.Pair;
 import lombok.AllArgsConstructor;
@@ -18,17 +18,14 @@ public class CheckEngine {
 
     private List<CheckFlow> checksFlow;
 
-    public void startEngine(ApplicationCheck applicationCheck) {
+    public void startEngine(CheckFlow checkFlow, ApplicationCheck applicationCheck) {
         final String applicantId = applicationCheck.getApplicantId();
         final String depositId = applicationCheck.getDepositId();
-        log.info("Start processing application with user = {} and deposit = {}",
-                applicantId, depositId);
-        for (CheckFlow currFlow : checksFlow) {
-            processFlow(currFlow.getActions());
-        }
+        log.info("Start processing application with user = {} and deposit = {}", applicantId, depositId);
+
     }
 
-    private void processFlow(List<Pair<CheckAction, ErrorAction>> actions) {
+    private void processFlow(List<Pair<CheckAction, ErrorAction>> actions, String flowName) {
         for (Pair<CheckAction, ErrorAction> actionPair : actions) {
             final CheckAction action = actionPair.getFirst();
             final ErrorAction errorAction = actionPair.getSecond();
@@ -36,7 +33,7 @@ public class CheckEngine {
             try {
                 action.makeCheck();
             } catch (RuntimeException ex) {
-                // TODO: process error
+                log.error("Error while processing flow = {}, action = {}", flowName, action);
             }
         }
 
