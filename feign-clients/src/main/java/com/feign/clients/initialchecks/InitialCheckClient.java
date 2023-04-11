@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(value = "initial-checks")
 public interface InitialCheckClient {
+    // TODO: move url to application.yaml
     // here we put interface of our target controller
-    @PostMapping(path = "{requestId}")
-    ResponseEntity<String> checkApplication(@PathVariable @NotBlank String requestId,
+    @PostMapping(path = "api/v1/initialChecks/{requestId}")
+    ResponseEntity<String> checkApplication(@PathVariable("requestId") @NotBlank String requestId,
                                             @RequestBody @Valid ApplicationRequest applicationRequest);
 }
