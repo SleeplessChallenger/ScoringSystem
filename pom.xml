@@ -12,6 +12,8 @@
     <modules>
         <module>startscoring</module>
         <module>initialchecks</module>
+        <module>eureka-server</module>
+        <module>feign-clients</module>
     </modules>
 
     <properties>
@@ -25,6 +27,7 @@
         <javax.version>3.0.2</javax.version>
         <hibernate.validator.version>8.0.0.Final</hibernate.validator.version>
         <kotlin.dependency.version>1.8.20</kotlin.dependency.version>
+        <spring.cloud-version>2022.0.2</spring.cloud-version>
     </properties>
 
     <dependencyManagement>
@@ -35,6 +38,14 @@
                 <version>${spring.boot.dependencies.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring.cloud-version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -67,6 +78,10 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
             <version>${kotlin.dependency.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
     </dependencies>
 
