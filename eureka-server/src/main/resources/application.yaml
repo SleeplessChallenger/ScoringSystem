@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: eureka-server
+
+server:
+  port: 8761
+eureka:
+  client:
+    fetch-registry: false
+# it is to prevent this microservice to register itself in the eureka server
