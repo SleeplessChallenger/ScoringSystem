@@ -1,5 +1,7 @@
 package com.startscoring.process.service;
 
+import com.feign.clients.initialchecks.ApplicationRequest;
+import com.feign.clients.initialchecks.InitialCheckClient;
 import com.startscoring.process.dto.Applicant;
 import com.startscoring.process.dto.Deposit;
 import com.startscoring.process.persistence.customer.ApplicantEntity;
@@ -8,9 +10,12 @@ import com.startscoring.process.persistence.deposit.DepositEntity;
 import com.startscoring.process.persistence.deposit.DepositRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -19,6 +24,8 @@ public class StartScoringService {
 
     private final ApplicantRepository applicantRepository;
     private final DepositRepository depositRepository;
+    private final RestTemplate restTemplate;
+    private final InitialCheckClient initialCheckClient;
 
     public ApplicantEntity registerApplicant(Applicant applicant) {
         // TODO: think about Id
@@ -47,5 +54,17 @@ public class StartScoringService {
                 .build();
         depositRepository.save(depositEntity);
         log.info("Saved deposit with id = {}", deposit.getDepositId());
+    }
+
+    public void startInitialChecks(String applicantId, String depositId) {
+        // TODO: handle exceptions and further action to the database
+        // TODO: persist data that current user is being processed
+
+        final String requestId = UUID.randomUUID().toString();
+        final ResponseEntity<String> response = initialCheckClient.checkApplication(requestId,
+                ApplicationRequest.builder()
+                        .applicantId(applicantId)
+                        .depositId(depositId)
+                        .build());
     }
 }

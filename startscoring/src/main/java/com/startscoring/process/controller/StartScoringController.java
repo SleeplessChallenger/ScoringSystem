@@ -33,10 +33,13 @@ public class StartScoringController {
 
         final ApplicantEntity applicantEntity = startScoringService.registerApplicant(application.getApplicant());
         startScoringService.registerDeposit(application.getDeposit(), applicantEntity);
-
+        startScoringService.startInitialChecks(applicantId, depositId);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(String.format("Accepted request from customer = %s and deposit = %s", applicantId, depositId));
+                .body(String.format(
+                        "Accepted request from customer = %s and deposit = %s. Now it is in process",
+                        applicantId, depositId)
+                );
     }
 
 }
