@@ -12,7 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -24,7 +23,6 @@ public class StartScoringService {
 
     private final ApplicantRepository applicantRepository;
     private final DepositRepository depositRepository;
-    private final RestTemplate restTemplate;
     private final InitialCheckClient initialCheckClient;
 
     public ApplicantEntity registerApplicant(Applicant applicant) {
