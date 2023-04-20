@@ -34,6 +34,7 @@ public class StartScoringController {
         final ApplicantEntity applicantEntity = startScoringService.registerApplicant(application.getApplicant());
         startScoringService.registerDeposit(application.getDeposit(), applicantEntity);
         startScoringService.startInitialChecks(applicantId, depositId);
+        // TODO: configure DB interactions in
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(String.format(
