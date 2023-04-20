@@ -41,6 +41,12 @@ services:
     networks:
       - postgres-scoring
     restart: unless-stopped
+  zipkin:
+    container_name: zipkin-tracing
+    image: openzipkin/zipkin
+    ports:
+      # Port used for the Zipkin UI and HTTP Api
+      - 9411:9411
 
 networks:
   postgres-scoring:

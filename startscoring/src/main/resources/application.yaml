@@ -1,6 +1,15 @@
 server:
   port: 8081
 
+management:
+  tracing:
+    enabled: true
+    sampling.probability: 1.0
+
+  zipkin.tracing.endpoint: 'http://localhost:9411/api/v2/spans'
+
+logging.pattern.level: "trace_id=%mdc{traceId} span_id=%mdc{spanId} trace_flags=%mdc{traceFlags} %p"
+
 spring:
   application:
     name: start-scoring
@@ -16,6 +25,8 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: 'true'
+  zipkin:
+    base-url: 'http://localhost:9411'
 
 eureka:
   client:
