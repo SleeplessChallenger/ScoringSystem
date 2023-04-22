@@ -15,6 +15,7 @@
         <module>eureka-server</module>
         <module>feign-clients</module>
         <module>api-gateway</module>
+        <module>amqp</module>
     </modules>
 
     <properties>

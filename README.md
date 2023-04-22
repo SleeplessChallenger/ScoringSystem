@@ -36,6 +36,20 @@
    it is currently working). Meanwhile, queue will keep those messages. So, queue will take our
    request and send response that it was accepted and now is being processed. After that we
    deal with our request, but previous part of the system doesn't wait => async
+7. RabbitMQ doesn't allow you to store data in a cluster, whilst Kafka does
+   - usually brokers are run in multiple availability zones (AZ)
+8. RabbitMQ:
+   - messages first land in _exchange_
+   - _exchange_ forwards them based on the _routing pattern_ to the _binding_
+   - _binding_: it binds _exchange_ to a particular queue
+   - we can have many _exchanges_ and _queues_
+   - exchange types:
+     - direct: routing key == binding
+     - fanout: message sent to every queue
+     - topic: partial match
+     - headers: uses message header instead of routing key
+     - nameless: routing key == queue name
+   - routing key and binding
 
 
 To create banner.txt - https://devops.datenkollektiv.de/banner.txt/index.html
