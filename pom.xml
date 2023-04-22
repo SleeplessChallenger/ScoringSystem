@@ -16,6 +16,8 @@
         <module>feign-clients</module>
         <module>api-gateway</module>
         <module>amqp</module>
+        <module>applicant-models</module>
+        <module>deposit-models</module>
     </modules>
 
     <properties>
