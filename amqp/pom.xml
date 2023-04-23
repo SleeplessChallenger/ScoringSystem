@@ -10,12 +10,7 @@
     </parent>
 
     <artifactId>amqp</artifactId>
-
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
@@ -23,5 +18,10 @@
             <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <!--we don't put spring-boot-maven-plugin here as this module doen't have SpringBoot run file-->
+        <finalName>amqp-module</finalName>
+    </build>
 
 </project>

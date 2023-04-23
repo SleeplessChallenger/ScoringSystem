@@ -35,6 +35,7 @@
     </properties>
 
     <dependencyManagement>
+
         <dependencies>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -51,7 +52,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
 
         </dependencies>
     </dependencyManagement>
@@ -126,15 +126,39 @@
     </dependencies>
 
     <build>
+
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <!--after we've packaged our application with maven plugin, we will repackage it
+                        with this plugin to make each JAR an executable instance with SpringBoot-->
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                     <version>${spring.boot.maven.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
+
+        <plugins>
+            <!--all submodules will have this plugin installed-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+        </plugins>
+
     </build>
 
 </project>

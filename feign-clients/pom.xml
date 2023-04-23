@@ -10,11 +10,11 @@
     </parent>
 
     <artifactId>feign-clients</artifactId>
+    <packaging>jar</packaging>
 
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <build>
+        <!--we don't put spring-boot-maven-plugin here as this module doen't have SpringBoot run file-->
+        <finalName>feign-clients-module</finalName>
+    </build>
 
 </project>
