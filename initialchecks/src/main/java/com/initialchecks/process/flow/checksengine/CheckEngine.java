@@ -36,6 +36,5 @@ public class CheckEngine {
                 log.error("Error while processing flow = {}, action = {}", flowName, action);
             }
         }
-
     }
 }

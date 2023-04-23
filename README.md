@@ -51,5 +51,8 @@
      - nameless: routing key == queue name
    - routing key and binding
 
+9. If we don't end our check process due to some checks being activated, 
+   we will give request with data to the queue
+
 
 To create banner.txt - https://devops.datenkollektiv.de/banner.txt/index.html
