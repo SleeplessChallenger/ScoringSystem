@@ -53,6 +53,11 @@
 
 9. If we don't end our check process due to some checks being activated, 
    we will give request with data to the queue
+10. Observarbility:
+    - Tracing in SpringBoot: https://www.appsdeveloperblog.com/micrometer-and-zipkin-in-spring-boot
+    - https://github.com/openzipkin/zipkin/blob/master/zipkin-server/README.md#environment-variables
+    - OpenTelemetry: https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/overview.md
 
+11. Added profiles to Maven to make build & push of Docker container only with certain condition
 
 To create banner.txt - https://devops.datenkollektiv.de/banner.txt/index.html

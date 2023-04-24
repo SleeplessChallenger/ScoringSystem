@@ -32,6 +32,9 @@
         <kotlin.dependency.version>1.8.20</kotlin.dependency.version>
         <spring.cloud-version>2022.0.2</spring.cloud-version>
         <jakarta.persistence.version>3.1.0</jakarta.persistence.version>
+
+        <image>enoshima/${project.artifactId}:${project.version}</image>
+        <!--TODO: instead of project.version put TeamCity/TravisCI-->
     </properties>
 
     <dependencyManagement>
@@ -143,6 +146,42 @@
                         </execution>
                     </executions>
                 </plugin>
+
+                <!--we will need JIB only for modules with SpringBoot as we want Docker images
+                    only for microservices-->
+                <plugin>
+                    <groupId>com.google.cloud.tools</groupId>
+                    <artifactId>jib-maven-plugin</artifactId>
+                    <version>3.3.1</version>
+                    <configuration>
+                        <from>
+                            <image>eclipse-temurin:17</image>
+                            <platforms>
+                                <platform>
+                                    <architecture>arm64</architecture>
+                                    <os>linux</os>
+                                </platform>
+                                <platform>
+                                    <architecture>amd64</architecture>
+                                    <os>linux</os>
+                                </platform>
+                            </platforms>
+                        </from>
+                        <to>
+                            <!--image will be produced along with this tag-->
+                            <tags>latest</tags>
+                        </to>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>build</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
             </plugins>
         </pluginManagement>
 
