@@ -14,6 +14,7 @@ public class BeanLoaderUtils {
     public static List<Pair<CheckAction, ErrorAction>> createActions(BeanLoader beanLoader,
                                                                      List<Pair<String, String>> flowTasks) {
         return flowTasks.stream().map(tasks -> {
+            // Use name of the Bean and parent class. Spring will resolve the Bean from the context
             final CheckAction checkAction = beanLoader.getBeanFromApplicationContext(tasks.getFirst(),
                     CheckAction.class);
             final ErrorAction errorAction = beanLoader.getBeanFromApplicationContext(tasks.getSecond(),

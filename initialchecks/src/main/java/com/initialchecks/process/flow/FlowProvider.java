@@ -14,6 +14,7 @@ public class FlowProvider {
     private final Map<String, CheckFlow> flowMap;
 
     public FlowProvider(List<CheckFlow> flows) {
+        // here Spring will inject CheckFlow which will grab all the descendants
         this.flowMap = flows.stream().collect(Collectors.toMap(CheckFlow::getFlowName, Function.identity()));
     }
 

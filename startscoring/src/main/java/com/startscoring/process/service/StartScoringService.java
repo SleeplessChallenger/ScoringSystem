@@ -8,6 +8,7 @@ import com.startscoring.process.persistence.customer.ApplicantEntity;
 import com.startscoring.process.persistence.customer.ApplicantRepository;
 import com.startscoring.process.persistence.deposit.DepositEntity;
 import com.startscoring.process.persistence.deposit.DepositRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ public class StartScoringService {
     private final DepositRepository depositRepository;
     private final InitialCheckClient initialCheckClient;
 
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     public ApplicantEntity registerApplicant(Applicant applicant) {
         // TODO: think about Id
         final ApplicantEntity applicantEntity = ApplicantEntity.builder()
@@ -41,6 +43,7 @@ public class StartScoringService {
         return applicantEntity;
     }
 
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void registerDeposit(Deposit deposit, ApplicantEntity applicant) {
         final DepositEntity depositEntity = DepositEntity.builder()
                 .depositSystemId(deposit.getDepositId())

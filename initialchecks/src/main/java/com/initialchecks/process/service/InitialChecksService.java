@@ -2,12 +2,17 @@ package com.initialchecks.process.service;
 
 import com.amqp.producer.MessageProducer;
 import com.initialchecks.process.dto.ApplicationCheck;
+import com.initialchecks.process.dto.FlowContext;
 import com.initialchecks.process.flow.FlowProvider;
 import com.initialchecks.process.flow.checksengine.CheckEngine;
 import com.initialchecks.process.flow.checksflow.ApplicantFlow;
 import com.initialchecks.process.flow.checksflow.CheckFlow;
 import com.initialchecks.process.flow.checksflow.DepositFlow;
+import com.initialchecks.process.persistence.CheckEntity;
+import com.initialchecks.process.persistence.CheckRepository;
+import com.initialchecks.process.utils.UuidUtils;
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +40,8 @@ public class InitialChecksService {
     private final FlowProvider flowProvider;
     private final MessageProducer messageProducer;
 
+    private final CheckRepository checkRepository;
+
     @PostConstruct
     public void postConstruct() {
         this.executorService = Executors.newFixedThreadPool(
@@ -46,14 +53,36 @@ public class InitialChecksService {
         final CheckFlow applicantFlow = flowProvider.getFullFlow(ApplicantFlow.FLOW_NAME);
         final CheckFlow depositFlow = flowProvider.getFullFlow(DepositFlow.FLOW_NAME);
 
-        executorService.execute(() -> checkEngine.startEngine(applicantFlow, applicationCheck));
-        executorService.execute(() -> checkEngine.startEngine(depositFlow, applicationCheck));
+        final FlowContext context = FlowContext.builder()
+                .flowUniqueId(UuidUtils.generateUuid())
+                .applicationCheck(applicationCheck)
+                .build();
 
-        // TODO: if checks haven't worked - throw data to the RabbitMQ
+        executorService.execute(() -> checkEngine.startEngine(applicantFlow, context));
+        executorService.execute(() -> checkEngine.startEngine(depositFlow, context));
+
+        // If checks haven't ended with Reject or no error => send data to RabbitMQ
+        sendDataToQueue(applicationCheck);
+        log.info("Data has been sent to RabbitMQ exchange = {} using routing key = {}",
+                applicantExchange, applicantRoutingKey);
     }
 
-    private void sendDataToQueue() {
-        // TODO: send data to RabbitMQ
-        messageProducer.publish("stub", applicantExchange, applicantRoutingKey);
+    private void sendDataToQueue(ApplicationCheck applicationCheck) {
+        messageProducer.publish(applicationCheck, applicantExchange, applicantRoutingKey);
+    }
+
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    public void persistData(ApplicationCheck applicationCheck) {
+        final String applicantId = applicationCheck.getApplicantId();
+        final String depositId = applicationCheck.getDepositId();
+
+        final CheckEntity checkEntity = CheckEntity.builder()
+                .applicantId(applicantId)
+                .depositId(depositId)
+                .createdAt(applicationCheck.getCreatedAt())
+                .build();
+
+        checkRepository.save(checkEntity);
+        log.info("Saved check entity with applicantId = {} and depositId = {}", applicantId, depositId);
     }
 }
