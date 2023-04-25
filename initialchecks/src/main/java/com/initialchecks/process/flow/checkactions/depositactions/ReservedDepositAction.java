@@ -1,5 +1,6 @@
 package com.initialchecks.process.flow.checkactions.depositactions;
 
+import com.initialchecks.process.dto.FlowContext;
 import com.initialchecks.process.flow.checkactions.CheckAction;
 import org.springframework.stereotype.Component;
 
@@ -8,7 +9,7 @@ public class ReservedDepositAction implements CheckAction {
     public static final String ACTION_NAME = "reservedDepositAction";
 
     @Override
-    public void makeCheck() {
+    public void makeCheck(FlowContext context) {
 
     }
 

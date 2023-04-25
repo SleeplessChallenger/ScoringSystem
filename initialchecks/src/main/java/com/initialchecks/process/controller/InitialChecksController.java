@@ -28,14 +28,18 @@ public class InitialChecksController {
         final String depositId = applicationRequest.getDepositId();
         log.info("Request = {}. Started checking application with userId = {} and depositId = {}",
                 requestId, applicantId, depositId);
-        // TODO: persist data with requestId that we start checking
 
-        // Accept request from Tomcat and give to Java Executor. Don't wait and give response
-        initialChecksService.checkApplication(ApplicationCheck.builder()
-                .createdAt(LocalDateTime.now())
+        final LocalDateTime now = LocalDateTime.now();
+        final ApplicationCheck applicationCheck = ApplicationCheck.builder()
+                .createdAt(now)
                 .applicantId(applicantId)
                 .depositId(depositId)
-                .build()
+                .build();
+
+        initialChecksService.persistData(applicationCheck);
+
+        // Accept request from Tomcat and give to Java Executor. Don't wait and give response
+        initialChecksService.checkApplication(applicationCheck
         );
 
         return ResponseEntity

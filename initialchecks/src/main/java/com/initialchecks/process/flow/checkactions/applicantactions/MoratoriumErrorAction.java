@@ -1,5 +1,6 @@
 package com.initialchecks.process.flow.checkactions.applicantactions;
 
+import com.initialchecks.process.dto.FlowContext;
 import com.initialchecks.process.flow.checkactions.ErrorAction;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +10,7 @@ public class MoratoriumErrorAction implements ErrorAction {
 
 
     @Override
-    public void handleError() {
+    public void handleError(FlowContext context) {
 
     }
 

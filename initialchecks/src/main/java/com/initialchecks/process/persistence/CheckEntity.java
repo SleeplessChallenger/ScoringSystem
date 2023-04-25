@@ -23,7 +23,7 @@ public class CheckEntity {
     )
     private Integer id;
 
-    private Integer applicantId;
-    private Integer depositId;
+    private String applicantId;
+    private String depositId;
     private LocalDateTime createdAt;
 }

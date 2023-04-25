@@ -12,7 +12,6 @@ public class MessageProducer {
 
     private final AmqpTemplate amqpTemplate;
 
-
     public void publish(Object payload, String exchange, String routingKey) {
         log.info("Sending payload to exchange = {} using routing key = {}", exchange, routingKey);
         amqpTemplate.convertAndSend(exchange, routingKey, payload);
