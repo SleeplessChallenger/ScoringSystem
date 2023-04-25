@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: eureka-server
+  zipkin:
+    base-url: 'http://zipkin-tracing:9411'
+
+server:
+  port: 8761
+
+eureka:
+  client:
+    fetch-registry: false
+    register-with-eureka: false
+# it is to prevent this microservice to register itself in the eureka server

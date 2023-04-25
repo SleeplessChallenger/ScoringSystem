@@ -1,0 +1,36 @@
+server:
+  port: 8081
+
+management:
+  tracing:
+    enabled: true
+    sampling.probability: 1.0
+
+  zipkin.tracing.endpoint: 'http://zipkin-tracing:9411/api/v2/spans'
+
+logging.pattern.level: "trace_id=%mdc{traceId} span_id=%mdc{spanId} trace_flags=%mdc{traceFlags} %p"
+
+spring:
+  application:
+    name: start-scoring
+  datasource:
+    username: 'sleeplesschallenger'
+    password: 'superSecret'
+    url: jdbc:postgresql://postgres-start:5434/postgres-start-scoring-db
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: 'true'
+    hibernate:
+      ddl-auto: update
+    show-sql: 'true'
+  zipkin:
+    base-url: 'http://zipkin-tracing:9411'
+
+eureka:
+  client:
+    service-url:
+      defaultZone: 'http://eureka-server:8761/eureka'
+    fetch-registry: true
+    register-with-eureka: true

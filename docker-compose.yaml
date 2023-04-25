@@ -44,6 +44,8 @@ services:
   zipkin:
     container_name: zipkin-tracing
     image: openzipkin/zipkin
+    networks:
+      - spring
     ports:
       # Port used for the Zipkin UI and HTTP Api
       - "9411:9411"
@@ -53,9 +55,68 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    networks:
+      - spring
+  eureka-server:
+    image: enoshima/eureka-server:latest
+    container_name: eureka-server
+    ports:
+      - "8761:8762"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    # docker will match after - in application-docker.yaml
+    networks:
+      - spring
+    depends_on:
+      - zipkin
+  api-gateway:
+    image: enoshima/api-gateway:latest
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+    depends_on:
+      - zipkin
+      - eureka-server
+  start-scoring:
+    image: enoshima/startscoring:latest
+    container_name: start-scoring
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+      - postgres-scoring
+    depends_on:
+      - zipkin
+      - postgres-start
+      - eureka-server
+  initial-checks:
+    image: enoshima/initialchecks:latest
+    container_name: initial-checks
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+      - postgres-scoring
+    depends_on:
+      - zipkin
+      - postgres-checks
+      - rabbitmq
+      - eureka-server
+
+# TODO: add application-docker.yaml to models microservices and here
 
 networks:
   postgres-scoring:
+    driver: bridge
+  spring:
     driver: bridge
 
 volumes:

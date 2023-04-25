@@ -1,0 +1,51 @@
+server:
+  port: 8082
+
+management:
+  tracing:
+    enabled: true
+    sampling.probability: 1.0
+
+  zipkin.tracing.endpoint: 'http://zipkin-tracing:9411/api/v2/spans'
+
+logging.pattern.level: "trace_id=%mdc{traceId} span_id=%mdc{spanId} trace_flags=%mdc{traceFlags} %p"
+
+spring:
+  application:
+    name: initial-checks
+  datasource:
+    username: 'sleeplesschallenger'
+    password: 'superSecret'
+    url: jdbc:postgresql://postgres-checks:5435/initial-checks-db
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: 'true'
+    hibernate:
+      ddl-auto: update
+    show-sql: 'true'
+  zipkin:
+    base-url: 'http://zipkin-tracing:9411'
+  rabbitmq:
+    addresses: 'rabbitmq:5672' # TODO: add label to allow config map to work
+
+app:
+  executor:
+    threadsPerProcessor: 10
+
+eureka:
+  client:
+    service-url:
+      defaultZone: 'http://eureka-server:8761/eureka'
+    fetch-registry: true
+    register-with-eureka: true
+
+# For applicant
+rabbitmq:
+  exchanges:
+    internal: internal.exchange
+  queues:
+    applicant-models: applicant.queue
+  routing-keys:
+    internal-applicant: internal.applicant.routing-key

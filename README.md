@@ -59,5 +59,6 @@
     - OpenTelemetry: https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/overview.md
 
 11. Added profiles to Maven to make build & push of Docker container only with certain condition
+12. Also, I use packaging - JAR
 
 To create banner.txt - https://devops.datenkollektiv.de/banner.txt/index.html
