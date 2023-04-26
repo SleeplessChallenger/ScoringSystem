@@ -1,5 +1,6 @@
 package com.initialchecks.process.flow.checksflow;
 
+import com.initialchecks.process.dto.FlowContext;
 import com.initialchecks.process.flow.checkactions.CheckAction;
 import com.initialchecks.process.flow.checkactions.ErrorAction;
 import kotlin.Pair;
@@ -17,6 +18,8 @@ public abstract class CheckFlow {
         this.checkFlowName = name;
         this.flowActions = actions;
     }
+
+    public abstract void sendDataToQueue(FlowContext flowContext);
 
     public abstract String getFlowName();
 }

@@ -1,8 +1,6 @@
 package com.initialchecks.process.service;
 
-import com.amqp.producer.MessageProducer;
 import com.initialchecks.process.dto.ApplicationCheck;
-import com.initialchecks.process.dto.FlowContext;
 import com.initialchecks.process.flow.FlowProvider;
 import com.initialchecks.process.flow.checksengine.CheckEngine;
 import com.initialchecks.process.flow.checksflow.ApplicantFlow;
@@ -10,7 +8,6 @@ import com.initialchecks.process.flow.checksflow.CheckFlow;
 import com.initialchecks.process.flow.checksflow.DepositFlow;
 import com.initialchecks.process.persistence.CheckEntity;
 import com.initialchecks.process.persistence.CheckRepository;
-import com.initialchecks.process.utils.UuidUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,49 +23,32 @@ import java.util.concurrent.Executors;
 @RequiredArgsConstructor
 public class InitialChecksService {
 
-    @Value("${rabbitmq.exchanges.internal}")
-    private String applicantExchange;
-
-    @Value("${rabbitmq.routing-keys.internal-applicant}")
-    private String applicantRoutingKey;
-
     @Value("${app.executor.threadsPerProcessor}")
     private int threadsPerProcessor;
+
+    private final ApplicantFlow applicantFlow;
+    private final DepositFlow depositFlow;
 
     private ExecutorService executorService;
     private final CheckEngine checkEngine;
     private final FlowProvider flowProvider;
-    private final MessageProducer messageProducer;
 
     private final CheckRepository checkRepository;
 
     @PostConstruct
     public void postConstruct() {
+        int availableProcessors = Runtime.getRuntime().availableProcessors();
+        log.info("Processors available = {}", availableProcessors);
         this.executorService = Executors.newFixedThreadPool(
-                threadsPerProcessor * Runtime.getRuntime().availableProcessors()
-        );
+                threadsPerProcessor * availableProcessors);
     }
 
     public void checkApplication(ApplicationCheck applicationCheck) {
         final CheckFlow applicantFlow = flowProvider.getFullFlow(ApplicantFlow.FLOW_NAME);
         final CheckFlow depositFlow = flowProvider.getFullFlow(DepositFlow.FLOW_NAME);
 
-        final FlowContext context = FlowContext.builder()
-                .flowUniqueId(UuidUtils.generateUuid())
-                .applicationCheck(applicationCheck)
-                .build();
-
-        executorService.execute(() -> checkEngine.startEngine(applicantFlow, context));
-        executorService.execute(() -> checkEngine.startEngine(depositFlow, context));
-
-        // If checks haven't ended with Reject or no error => send data to RabbitMQ
-        sendDataToQueue(applicationCheck);
-        log.info("Data has been sent to RabbitMQ exchange = {} using routing key = {}",
-                applicantExchange, applicantRoutingKey);
-    }
-
-    private void sendDataToQueue(ApplicationCheck applicationCheck) {
-        messageProducer.publish(applicationCheck, applicantExchange, applicantRoutingKey);
+        executorService.execute(() -> checkEngine.startEngine(applicantFlow, applicationCheck));
+        executorService.execute(() -> checkEngine.startEngine(depositFlow, applicationCheck));
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)

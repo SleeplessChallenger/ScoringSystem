@@ -126,6 +126,12 @@
             <artifactId>feign-micrometer</artifactId>
         </dependency>
 
+        <!--for fighting error of Java 8 date/time-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

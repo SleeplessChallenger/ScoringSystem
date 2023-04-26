@@ -39,8 +39,7 @@ public class InitialChecksController {
         initialChecksService.persistData(applicationCheck);
 
         // Accept request from Tomcat and give to Java Executor. Don't wait and give response
-        initialChecksService.checkApplication(applicationCheck
-        );
+        initialChecksService.checkApplication(applicationCheck);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
