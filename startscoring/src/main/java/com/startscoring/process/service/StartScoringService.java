@@ -8,6 +8,7 @@ import com.startscoring.process.persistence.customer.ApplicantEntity;
 import com.startscoring.process.persistence.customer.ApplicantRepository;
 import com.startscoring.process.persistence.deposit.DepositEntity;
 import com.startscoring.process.persistence.deposit.DepositRepository;
+import com.startscoring.process.utils.UuidUtils;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -54,6 +56,8 @@ public class StartScoringService {
                 .applicant(applicant)
                 .build();
         depositRepository.save(depositEntity);
+
+        applicant.setDeposits(List.of(depositEntity));
         log.info("Saved deposit with id = {}", deposit.getDepositId());
     }
 
@@ -61,7 +65,7 @@ public class StartScoringService {
         // TODO: handle exceptions and further action to the database
         // TODO: persist data that current user is being processed
 
-        final String requestId = UUID.randomUUID().toString();
+        final String requestId = UuidUtils.generateUuid();
         final ResponseEntity<String> response = initialCheckClient.checkApplication(requestId,
                 ApplicationRequest.builder()
                         .applicantId(applicantId)
