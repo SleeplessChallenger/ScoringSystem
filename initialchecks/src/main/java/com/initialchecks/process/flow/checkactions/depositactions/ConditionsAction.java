@@ -12,7 +12,8 @@ public class ConditionsAction implements CheckAction {
 
     @Override
     public void makeCheck(FlowContext context) {
-        log.info("Action = ");
+        log.info("Flow = {}, action = {}. Processing deposit = {}",
+                context.getFlowName(), getActionName(), context.getApplicationCheck().getDepositId());
     }
 
     @Override
