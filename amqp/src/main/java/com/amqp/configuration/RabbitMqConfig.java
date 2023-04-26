@@ -1,5 +1,6 @@
 package com.amqp.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
@@ -36,6 +37,12 @@ public class RabbitMqConfig {
 
     @Bean
     private static MessageConverter createMessageConverter() {
-        return new Jackson2JsonMessageConverter();
+        return new Jackson2JsonMessageConverter(createObjectMapper());
     }
+
+    @Bean
+    public static ObjectMapper createObjectMapper() {
+        return new ObjectMapper().findAndRegisterModules();
+    }
+
 }
