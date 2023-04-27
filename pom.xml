@@ -18,6 +18,8 @@
         <module>amqp</module>
         <module>applicant-models</module>
         <module>deposit-models</module>
+        <module>common-tools</module>
+        <module>finalchecks</module>
     </modules>
 
     <properties>

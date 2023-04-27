@@ -9,7 +9,10 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
         basePackages = "com.feign.clients"
 )
 @EnableDiscoveryClient
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {
+        "com.startscoring.process",
+        "com.scoring.commons"
+})
 public class StartScoringApplication {
     public static void main(String[] args) {
         SpringApplication.run(StartScoringApplication.class, args);

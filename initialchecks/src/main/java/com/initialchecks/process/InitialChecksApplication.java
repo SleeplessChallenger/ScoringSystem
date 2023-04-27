@@ -8,6 +8,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 @EnableDiscoveryClient
 @SpringBootApplication(scanBasePackages = {
         "com.amqp",
+        "com.scoring.commons",
         "com.initialchecks.process"
 })
 public class InitialChecksApplication {

@@ -25,7 +25,6 @@ public class ApplicantFlow extends CheckFlow {
             new Pair<>(IncomeAction.ACTION_NAME, IncomeErrorAction.ACTION_NAME)
     );
 
-    // FIXME: fine-tune
     @Value("${rabbitmq.exchanges.internal}")
     private String applicantExchange;
 

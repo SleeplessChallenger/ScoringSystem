@@ -36,10 +36,15 @@ public class InitialChecksController {
                 .depositId(depositId)
                 .build();
 
-        initialChecksService.persistData(applicationCheck);
-
-        // Accept request from Tomcat and give to Java Executor. Don't wait and give response
-        initialChecksService.checkApplication(applicationCheck);
+        try {
+            initialChecksService.persistData(applicationCheck);
+            // Accept request from Tomcat and give to Java Executor. Don't wait and give response
+            initialChecksService.checkApplication(applicationCheck);
+        } catch (RuntimeException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ex.getMessage());
+        }
 
         return ResponseEntity
                 .status(HttpStatus.OK)

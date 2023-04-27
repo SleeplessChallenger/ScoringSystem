@@ -19,7 +19,7 @@ public class ApplicantConsumer {
         log.info("Consumed payload with applicantId = {}", 12345); // TODO: fix later
         try {
             modelService.scoreApplicant(payload);
-        } catch (RuntimeException exception) {
+        } catch (RuntimeException ex) {
             // TODO: do something if error occurred during checking applicant
         }
     }

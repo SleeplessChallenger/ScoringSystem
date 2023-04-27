@@ -1,4 +1,4 @@
-package com.startscoring.process.utils;
+package com.scoring.commons.utils;
 
 import lombok.experimental.UtilityClass;
 
@@ -7,7 +7,7 @@ import java.util.UUID;
 @UtilityClass
 public class UuidUtils {
 
-    public String generateUuid() {
+    public static String generateUuid() {
         return  UUID.randomUUID().toString().replace("-", "");
     }
 }

@@ -1,5 +1,5 @@
 server:
-  port: 8084
+  port: 8085
 
 management:
   tracing:
@@ -12,25 +12,17 @@ logging.pattern.level: "trace_id=%mdc{traceId} span_id=%mdc{spanId} trace_flags=
 
 spring:
   application:
-    name: applicant-models
+    name: deposit-models
   rabbitmq:
     addresses: 'localhost:5672' # TODO: put label to apply in K8S further
-#    listener:
-#      simple:
-#        retry:
-#          enabled: 'true'
-#          initial-interval: 3s
-#          max-attempts: 3
-#          max-interval: 7s
-#          multiplier: 2
 
 rabbitmq:
   exchanges:
     internal: internal.exchange
   queues:
-    applicant-models: applicant.queue
+    deposit-models: deposit.queue
   routing-keys:
-    internal-applicant: internal.applicant.routing-key
+    internal-deposit: internal.deposit.routing-key
 
 # in routing-keys: name_of_the_exchange.queue_name.routing-key
 

@@ -5,7 +5,7 @@ import com.initialchecks.process.dto.FlowContext;
 import com.initialchecks.process.flow.checkactions.CheckAction;
 import com.initialchecks.process.flow.checkactions.ErrorAction;
 import com.initialchecks.process.flow.checksflow.CheckFlow;
-import com.initialchecks.process.utils.UuidUtils;
+import com.scoring.commons.utils.UuidUtils;
 import kotlin.Pair;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -27,11 +27,10 @@ public class DepositFlow extends CheckFlow {
             new Pair<>(ConditionsAction.ACTION_NAME, ConditionsErrorAction.ACTION_NAME)
     );
 
-    // FIXME: fine-tune
     @Value("${rabbitmq.exchanges.internal}")
     private String applicantExchange;
 
-    @Value("${rabbitmq.routing-keys.internal-applicant}")
+    @Value("${rabbitmq.routing-keys.internal-deposit}")
     private String applicantRoutingKey;
 
     private final MessageProducer messageProducer;
