@@ -41,11 +41,13 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
 
-# For applicant
 rabbitmq:
   exchanges:
-    internal: internal.exchange
+    applicant: applicant.exchange
+    deposit: deposit.exchange
   queues:
     applicant-models: applicant.queue
+    deposit-models: deposit.queue
   routing-keys:
-    internal-applicant: internal.applicant.routing-key
+    internal-applicant: applicant.routing-key
+    internal-deposit: deposit.routing-key

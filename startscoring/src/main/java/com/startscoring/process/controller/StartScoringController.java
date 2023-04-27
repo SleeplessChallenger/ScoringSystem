@@ -50,5 +50,4 @@ public class StartScoringController {
                         applicantId, depositId)
                 );
     }
-
 }
