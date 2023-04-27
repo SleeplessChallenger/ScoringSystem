@@ -13,6 +13,7 @@ import java.util.List;
 @Data
 @Builder
 @Entity
+@Table(name = "applicant")
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApplicantEntity {
@@ -38,6 +39,8 @@ public class ApplicantEntity {
     private Integer age;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     // mappedBy field should match the field in DepositEntity
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "applicant")

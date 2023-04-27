@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @Entity
+@Table(name = "deposit")
 @NoArgsConstructor
 @AllArgsConstructor
 public class DepositEntity {
@@ -36,6 +37,8 @@ public class DepositEntity {
     private Integer depositAge;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "applicant_id", nullable = false)
