@@ -2,22 +2,20 @@ package com.startscoring.process.service;
 
 import com.feign.clients.initialchecks.ApplicationRequest;
 import com.feign.clients.initialchecks.InitialCheckClient;
+import com.scoring.commons.utils.UuidUtils;
 import com.startscoring.process.dto.Applicant;
 import com.startscoring.process.dto.Deposit;
 import com.startscoring.process.persistence.customer.ApplicantEntity;
 import com.startscoring.process.persistence.customer.ApplicantRepository;
 import com.startscoring.process.persistence.deposit.DepositEntity;
 import com.startscoring.process.persistence.deposit.DepositRepository;
-import com.startscoring.process.utils.UuidUtils;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -30,14 +28,15 @@ public class StartScoringService {
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public ApplicantEntity registerApplicant(Applicant applicant) {
-        // TODO: think about Id
+        final LocalDateTime now = LocalDateTime.now();
         final ApplicantEntity applicantEntity = ApplicantEntity.builder()
                 .applicantSystemId(applicant.getId())
                 .firstName(applicant.getFirstName())
                 .lastName(applicant.getLastName())
                 .middleName(applicant.getMiddleName())
                 .age(applicant.getAge())
-                .createdAt(LocalDateTime.now())
+                .createdAt(now)
+                .updatedAt(now)
                 .build();
 
         applicantRepository.save(applicantEntity);
@@ -47,12 +46,14 @@ public class StartScoringService {
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void registerDeposit(Deposit deposit, ApplicantEntity applicant) {
+        final LocalDateTime now = LocalDateTime.now();
         final DepositEntity depositEntity = DepositEntity.builder()
                 .depositSystemId(deposit.getDepositId())
                 .depositType(deposit.getDepositType())
                 .depositPrice(deposit.getDepositPrice())
                 .depositAge(deposit.getDepositAge())
-                .createdAt(LocalDateTime.now())
+                .createdAt(now)
+                .updatedAt(now)
                 .applicant(applicant)
                 .build();
         depositRepository.save(depositEntity);
@@ -62,14 +63,18 @@ public class StartScoringService {
     }
 
     public void startInitialChecks(String applicantId, String depositId) {
-        // TODO: handle exceptions and further action to the database
-        // TODO: persist data that current user is being processed
-
         final String requestId = UuidUtils.generateUuid();
-        final ResponseEntity<String> response = initialCheckClient.checkApplication(requestId,
+        initialCheckClient.checkApplication(requestId,
                 ApplicationRequest.builder()
                         .applicantId(applicantId)
                         .depositId(depositId)
                         .build());
+    }
+
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    public void updateInteractions(String applicantId, String depositId) {
+        final LocalDateTime now = LocalDateTime.now();
+        applicantRepository.updateApplicantInteraction(now, applicantId);
+        depositRepository.updateDepositInteraction(now, depositId);
     }
 }

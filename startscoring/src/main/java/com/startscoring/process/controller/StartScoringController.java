@@ -1,5 +1,6 @@
 package com.startscoring.process.controller;
 
+import com.scoring.commons.exceptions.InitialChecksException;
 import com.startscoring.process.dto.Application;
 import com.startscoring.process.persistence.customer.ApplicantEntity;
 import com.startscoring.process.service.StartScoringService;
@@ -21,20 +22,27 @@ public class StartScoringController {
 
     private final StartScoringService startScoringService;
 
-    // TODO: add ControllerAdvice maybe for all services at once
-    // TODO: check whether we need @Valid in Controller
-    // TODO: one applicant may have multiple deposits => keep this in mind
     // TODO: use liquibase
     @PostMapping
     public ResponseEntity<String> acceptScoring(@RequestBody @Valid Application application) {
         final String applicantId = application.getApplicant().getId();
         final String depositId = application.getDeposit().getDepositId();
-        log.info("Accepted request from customer = {}", applicantId);
+        log.info("Accepted request from customer = {} and depositId = {}", applicantId, depositId);
 
         final ApplicantEntity applicantEntity = startScoringService.registerApplicant(application.getApplicant());
         startScoringService.registerDeposit(application.getDeposit(), applicantEntity);
-        startScoringService.startInitialChecks(applicantId, depositId);
-        // TODO: configure DB interactions in
+
+        try {
+            startScoringService.startInitialChecks(applicantId, depositId);
+        } catch (RuntimeException ex) {
+            log.error("Error in InitialChecks microservice = {}", ex.getMessage());
+            // If error during persistence - also caught in Controller Advice
+            startScoringService.updateInteractions(applicantId, depositId);
+            throw new InitialChecksException(ex.getMessage(), ex);
+        }
+
+        log.info("Sent data to initial checks microservices. ApplicantId = {}, depositId = {}", applicantId, depositId);
+        startScoringService.updateInteractions(applicantId, depositId);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(String.format(
