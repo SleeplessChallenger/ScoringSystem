@@ -25,7 +25,7 @@ public class ApplicantFlow extends CheckFlow {
             new Pair<>(IncomeAction.ACTION_NAME, IncomeErrorAction.ACTION_NAME)
     );
 
-    @Value("${rabbitmq.exchanges.applicant}")
+    @Value("${rabbitmq.exchanges.internal}")
     private String applicantExchange;
 
     @Value("${rabbitmq.routing-keys.internal-applicant}")

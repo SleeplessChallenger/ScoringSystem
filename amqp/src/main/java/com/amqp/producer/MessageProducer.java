@@ -12,6 +12,7 @@ public class MessageProducer {
 
     private final AmqpTemplate amqpTemplate;
 
+    // TODO: add ack from Queue
     public void publish(Object payload, String exchange, String routingKey) {
         log.info("Sending payload to exchange = {} using routing key = {}", exchange, routingKey);
         amqpTemplate.convertAndSend(exchange, routingKey, payload);

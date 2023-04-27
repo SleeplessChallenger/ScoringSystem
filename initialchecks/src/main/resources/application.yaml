@@ -43,11 +43,10 @@ eureka:
 
 rabbitmq:
   exchanges:
-    applicant: applicant.exchange
-    deposit: deposit.exchange
+    internal: internal.exchange
   queues:
     applicant-models: applicant.queue
     deposit-models: deposit.queue
   routing-keys:
-    internal-applicant: applicant.routing-key
-    internal-deposit: deposit.routing-key
+    internal-applicant: internal.applicant.routing-key
+    internal-deposit: internal.deposit.routing-key

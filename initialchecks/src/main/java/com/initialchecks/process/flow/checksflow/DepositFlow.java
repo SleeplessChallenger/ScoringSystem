@@ -27,7 +27,7 @@ public class DepositFlow extends CheckFlow {
             new Pair<>(ConditionsAction.ACTION_NAME, ConditionsErrorAction.ACTION_NAME)
     );
 
-    @Value("${rabbitmq.exchanges.deposit}")
+    @Value("${rabbitmq.exchanges.internal}")
     private String applicantExchange;
 
     @Value("${rabbitmq.routing-keys.internal-deposit}")
