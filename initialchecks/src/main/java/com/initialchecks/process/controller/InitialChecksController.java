@@ -29,9 +29,8 @@ public class InitialChecksController {
         log.info("Request = {}. Started checking application with userId = {} and depositId = {}",
                 requestId, applicantId, depositId);
 
-        final LocalDateTime now = LocalDateTime.now();
         final ApplicationCheck applicationCheck = ApplicationCheck.builder()
-                .createdAt(now)
+                .createdAt(LocalDateTime.now())
                 .applicantId(applicantId)
                 .depositId(depositId)
                 .build();

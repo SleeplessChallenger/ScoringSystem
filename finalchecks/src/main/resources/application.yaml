@@ -1,0 +1,22 @@
+server:
+  port: 8086
+
+management:
+  tracing:
+    enabled: true
+    sampling.probability: 1.0
+
+logging.pattern.level: "trace_id=%mdc{traceId} span_id=%mdc{spanId} trace_flags=%mdc{traceFlags} %p"
+
+spring:
+  kafka:
+    bootstrap-servers: 'localhost:9092'
+  application:
+    name: final-checks
+
+eureka:
+  client:
+    service-url:
+      defaultZone: 'http://localhost:8761/eureka'
+    fetch-registry: true
+    register-with-eureka: true
