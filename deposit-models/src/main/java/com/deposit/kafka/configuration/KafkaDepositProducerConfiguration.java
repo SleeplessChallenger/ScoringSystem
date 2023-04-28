@@ -1,6 +1,6 @@
-package com.applicant.kafka.configuration;
+package com.deposit.kafka.configuration;
 
-import com.scoring.commons.dto.kafka.ApplicantDto;
+import com.scoring.commons.dto.kafka.DepositDto;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,13 +15,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class KafkaApplicantConfiguration {
+public class KafkaDepositProducerConfiguration {
 
     @Value("${spring.bootstrap-servers}")
     private String bootstrapServers;
 
-
-    private Map<String, Object> createProducerConfiguration() {
+    public Map<String, Object> createProducerConfig() {
         final Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -30,13 +29,14 @@ public class KafkaApplicantConfiguration {
     }
 
     @Bean
-    public ProducerFactory<String, ApplicantDto> createProducerFactory() {
+    public ProducerFactory<String, DepositDto> createProducerFactory() {
         // It will create Producer instances
-        return new DefaultKafkaProducerFactory<>(createProducerConfiguration());
+        return new DefaultKafkaProducerFactory<>(createProducerConfig());
     }
 
     @Bean
-    public KafkaTemplate<String, ApplicantDto> createKafkaTemplate(ProducerFactory<String, ApplicantDto> createProducerFactory) {
+    public KafkaTemplate<String, DepositDto> createKafkaTemplate(
+            ProducerFactory<String, DepositDto> createProducerFactory) {
         // This will send messages
         return new KafkaTemplate<>(createProducerFactory);
     }
