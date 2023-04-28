@@ -10,17 +10,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class KafkaDepositConsumer {
 
-    @Value("${kafka-custom.deposit-topic}")
+    @Value("${kafka-custom.deposit.topic}")
     private String topicName;
 
-    @Value("${kafka-custom.groupId}")
+    @Value("${kafka-custom.deposit.groupId}")
     private String groupId;
 
-
     @KafkaListener(
-            topics = "#{'${kafka-custom.deposit-topic}'.split(',')}",
+            topics = "#{'${kafka-custom.deposit.topic}'.split(',')}",
             containerFactory = "kafkaListenerContainerDepositFactory",
-            groupId = "#{'${kafka-custom.groupId}'.split(','}"
+            groupId = "#{'${kafka-custom.deposit.groupId}'.split(','}"
     )
     public void consumeApplicantTopicMessages(DepositDto deposit) {
         log.info("Consumed data from topic = {} using groupId = {}", topicName, groupId);

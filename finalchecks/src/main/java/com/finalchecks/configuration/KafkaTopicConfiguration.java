@@ -9,13 +9,11 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class KafkaTopicConfiguration {
 
-    @Value("${kafka-custom.deposit-topic}")
+    @Value("${kafka-custom.deposit.topic}")
     private String depositTopicName;
 
-    @Value("${kafka-custom.applicant-topic}")
+    @Value("${kafka-custom.applicant.topic}")
     private String applicantTopicName;
-
-    // TODO: think where to put the creation of topics
 
     @Bean(name = "applicantTopicBean")
     public NewTopic createApplicantTopic() {

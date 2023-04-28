@@ -14,6 +14,14 @@ spring:
   application:
     name: final-checks
 
+kafka-custom:
+  deposit:
+    groupId: 'deposit'
+    topic: 'deposit-topic'
+  applicant:
+    groupId: 'applicant'
+    topic: 'applicant-topic'
+
 eureka:
   client:
     service-url:

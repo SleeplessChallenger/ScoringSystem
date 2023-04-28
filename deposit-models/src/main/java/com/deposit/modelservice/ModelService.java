@@ -13,9 +13,8 @@ public class ModelService {
 
     private final KafkaDepositProducer depositProducer;
 
-    // TODO: put DTO further
     public void scoreDeposit(DepositDto payload) {
-        log.info("Start checking deposit = {} with AI models", 12345); // TODO: refactor later
+        log.info("Start checking deposit = {} with AI models", payload.getDepositId());
 
         // Score data
         depositProducer.produceMessage(payload);

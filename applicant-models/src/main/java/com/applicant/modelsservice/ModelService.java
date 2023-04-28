@@ -11,11 +11,10 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class ModelService {
 
-    // TODO: put DTO further
-
     private final KafkaApplicantProducer applicantProducer;
+
     public void scoreApplicant(ApplicantDto payload) {
-        log.info("Start checking applicant = {} with AI models", 12345); // TODO: refactor later
+        log.info("Start checking applicant = {} with AI models", payload.getApplicantId());
         applicantProducer.produceMessage(payload);
     }
 }

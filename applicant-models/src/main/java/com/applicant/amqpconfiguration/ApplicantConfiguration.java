@@ -1,4 +1,4 @@
-package com.applicant.configuration;
+package com.applicant.amqpconfiguration;
 
 import lombok.Getter;
 import org.springframework.amqp.core.Binding;

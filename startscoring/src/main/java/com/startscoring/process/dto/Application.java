@@ -12,9 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Application {
-
-    // TODO: later we will check salary, credit score and so on
-
     @Valid
     @NotNull
     private Applicant applicant;
