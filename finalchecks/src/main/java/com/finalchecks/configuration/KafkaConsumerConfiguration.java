@@ -20,19 +20,19 @@ import java.util.Map;
 @Configuration
 public class KafkaConsumerConfiguration {
 
-    // FIXME: maybe use different bootstrap servers as I will have 2 topics
+    // FIXME: Read docs for partitioning and so on
     @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
 
     public Map<String, Object> createConsumerDepositConfig() {
         final Map<String, Object> config = new HashMap<>();
-        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers); // TODO: here
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         return config;
     }
 
     public Map<String, Object> createConsumerApplicantConfig() {
         final Map<String, Object> config = new HashMap<>();
-        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers); // TODO: here
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         return config;
     }
 

@@ -1,4 +1,4 @@
-package com.deposit.configuration;
+package com.deposit.amqpconfiguration;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;

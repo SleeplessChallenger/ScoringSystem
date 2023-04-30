@@ -14,6 +14,18 @@ spring:
   application:
     name: final-checks
 
+app:
+  executor:
+    threadsPerProcessor: 10
+
+kafka-custom:
+  deposit:
+    groupId: 'deposit'
+    topic: 'deposit-topic'
+  applicant:
+    groupId: 'applicant'
+    topic: 'applicant-topic'
+
 eureka:
   client:
     service-url:

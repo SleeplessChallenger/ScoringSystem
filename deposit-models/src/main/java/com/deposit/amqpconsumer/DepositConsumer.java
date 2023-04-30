@@ -1,6 +1,7 @@
 package com.deposit.consumer;
 
 import com.deposit.modelservice.ModelService;
+import com.scoring.commons.dto.kafka.DepositDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -14,7 +15,7 @@ public class DepositConsumer {
     private final ModelService modelService;
 
     @RabbitListener(queues = "${rabbitmq.queues.deposit-models}")
-    public void consume(Object payload) {
+    public void consume(DepositDto payload) {
         log.info("Consumed payload with depositId = {}", 12345);
         try {
             modelService.scoreDeposit(payload);
