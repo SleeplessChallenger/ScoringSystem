@@ -16,7 +16,7 @@ public class ModelService {
     public void scoreDeposit(DepositDto payload) {
         log.info("Start checking deposit = {} with AI models", payload.getDepositId());
 
-        // Score data
+        // Score data and set decision to DTO
         depositProducer.produceMessage(payload);
     }
 }

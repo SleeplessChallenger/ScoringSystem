@@ -14,6 +14,10 @@ spring:
   application:
     name: final-checks
 
+app:
+  executor:
+    threadsPerProcessor: 10
+
 kafka-custom:
   deposit:
     groupId: 'deposit'
