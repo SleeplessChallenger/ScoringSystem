@@ -13,6 +13,7 @@ logging.pattern.level: "trace_id=%mdc{traceId} span_id=%mdc{spanId} trace_flags=
 spring:
   kafka:
     bootstrap-servers: 'localhost:9092'
+    topic: "applicant-topic"
   application:
     name: applicant-models
   rabbitmq:
