@@ -1,4 +1,18 @@
 services:
+  postgres-final-checks:
+    container_name: postgres-final-checks
+    image: postgres
+    environment:
+      POSTGRES_USER: sleeplesschallenger
+      POSTGRES_PASSWORD: superSecret
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5436:5432"
+    networks:
+      - postgres-scoring
+    restart: unless-stopped
   postgres-checks:
     container_name: postgres-initial-checks
     image: postgres

@@ -1,12 +1,13 @@
 package com.initialchecks.process.flow.checksflow;
 
-import com.amqp.producer.MessageProducer;
+import com.amqp.producers.MessageProducer;
 import com.initialchecks.process.beanloader.BeanLoader;
 import com.initialchecks.process.dto.FlowContext;
 import com.initialchecks.process.flow.checkactions.depositactions.ConditionsAction;
 import com.initialchecks.process.flow.checkactions.depositactions.ConditionsErrorAction;
 import com.initialchecks.process.flow.checkactions.depositactions.ReservedDepositAction;
 import com.initialchecks.process.flow.checkactions.depositactions.ReservedDepositErrorAction;
+import com.scoring.commons.dto.kafka.DepositDto;
 import kotlin.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,9 +34,9 @@ public class DepositFlow extends CheckFlow {
     @Value("${rabbitmq.routing-keys.internal-deposit}")
     private String applicantRoutingKey;
 
-    private final MessageProducer messageProducer;
+    private final MessageProducer<DepositDto> messageProducer;
 
-    public DepositFlow(BeanLoader beanLoader, MessageProducer messageProducer) {
+    public DepositFlow(BeanLoader beanLoader, MessageProducer<DepositDto> messageProducer) {
         super(FLOW_NAME, createActions(beanLoader, FLOW_ACTIONS));
         this.messageProducer = messageProducer;
     }
@@ -44,7 +45,11 @@ public class DepositFlow extends CheckFlow {
     public void sendDataToQueue(FlowContext flowContext) {
         log.info("Data has been sent to RabbitMQ exchange = {} using routing key = {}. Flow = {}",
                 applicantExchange, applicantRoutingKey, flowContext.getFlowName());
-        messageProducer.publish(flowContext, applicantExchange, applicantRoutingKey);
+        final DepositDto deposit = DepositDto.builder()
+                .flowUniqueId(flowContext.getFlowUniqueId())
+                .depositId(flowContext.getApplicationCheck().getDepositId())
+                .build();
+        messageProducer.publish(deposit, applicantExchange, applicantRoutingKey);
     }
 
     @Override
