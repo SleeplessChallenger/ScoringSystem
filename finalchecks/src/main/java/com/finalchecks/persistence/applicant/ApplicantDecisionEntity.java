@@ -39,6 +39,6 @@ public class ApplicantDecisionEntity {
     @Column(name = "decision_made_at")
     private LocalDateTime decisionMadeAt;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "applicant_decision")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "applicantDecision")
     private List<DepositDecisionEntity> depositsDecision;
 }
