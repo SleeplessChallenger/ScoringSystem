@@ -66,9 +66,9 @@
       only `log` and serve as template. Each of the 2 flows has FlowContext variable which is sent from flow to flow
       which
       keeps all the required data about the applicant or deposit.
-    * If some check worked - it uses method in **CheckAction** abstract class which sends request to the `final-checks`
-      service bypassing all AI models services (here **FeignClient** is used). `final-checks` will deal with it - persists
-      data and sends request to the required system
+    * If some check worked - it uses method in **CheckAction** abstract class which in turn calls another `@Service` which
+      sends request to the `final-checks` service bypassing all AI models services (here **FeignClient** is used).
+      `final-checks` will deal with it - persists data and sends request to the required system
     * If everything worked well - data is sent to 2 different queues in RabbitMQ using producer:
         * one for applicant and other - deposit TODO: retries and ack
 

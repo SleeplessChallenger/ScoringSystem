@@ -1,10 +1,22 @@
 package com.initialchecks.process.flow.checkactions;
 
 import com.initialchecks.process.dto.FlowContext;
+import com.initialchecks.process.service.RetryServiceInitialChecks;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-public interface CheckAction {
+@Slf4j
+@RequiredArgsConstructor
+public abstract class CheckAction {
 
-    void makeCheck(FlowContext context);
+    private final RetryServiceInitialChecks retryServiceInitialChecks;
 
-    String getActionName();
+    public abstract void makeCheck(FlowContext context);
+
+    public abstract String getActionName();
+
+    public void sendRejectDecision(FlowContext flowContext) {
+        // As AOP needs another class for creating proxy, we put @Retryable there
+        retryServiceInitialChecks.sendRejectDecision(flowContext);
+    }
 }

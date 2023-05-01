@@ -1,4 +1,4 @@
-package com.startscoring.process.configuration;
+package com.initialchecks.process.configuration;
 
 import feign.Capability;
 import feign.micrometer.MicrometerCapability;
