@@ -1,7 +1,5 @@
 package com.finalchecks.persistence.applicant;
 
-import com.finalchecks.persistence.deposit.DepositDecisionEntity;
-import com.scoring.commons.enums.Decision;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Builder
@@ -39,6 +36,7 @@ public class ApplicantDecisionEntity {
     @Column(name = "decision_made_at")
     private LocalDateTime decisionMadeAt;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "applicantDecision")
-    private List<DepositDecisionEntity> depositsDecision;
+    @Column(name = "flow_unique_id")
+    private String flowId;
+
 }

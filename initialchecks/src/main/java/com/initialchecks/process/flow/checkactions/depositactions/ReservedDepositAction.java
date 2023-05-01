@@ -2,13 +2,19 @@ package com.initialchecks.process.flow.checkactions.depositactions;
 
 import com.initialchecks.process.dto.FlowContext;
 import com.initialchecks.process.flow.checkactions.CheckAction;
+import com.initialchecks.process.service.RetryServiceInitialChecks;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class ReservedDepositAction implements CheckAction {
+public class ReservedDepositAction extends CheckAction {
     public static final String ACTION_NAME = "reservedDepositAction";
+
+    public ReservedDepositAction(RetryServiceInitialChecks retryServiceInitialChecks) {
+        super(retryServiceInitialChecks);
+    }
+
 
     @Override
     public void makeCheck(FlowContext context) {

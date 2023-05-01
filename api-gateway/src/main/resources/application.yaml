@@ -6,6 +6,10 @@ spring:
     # TODO: for now we use container name. Later - use Labels for ConfigMaps in K8S
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
       routes:
         - id: start-scoring
           uri: lb://START-SCORING # name from Eureka server
@@ -16,6 +20,8 @@ server:
   port: 8080
 
 eureka:
+  instance:
+    hostname: localhost
   client:
     service-url:
       defaultZone: 'http://localhost:8761/eureka'

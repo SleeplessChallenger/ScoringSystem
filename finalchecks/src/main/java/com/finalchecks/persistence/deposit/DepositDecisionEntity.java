@@ -39,7 +39,7 @@ public class DepositDecisionEntity {
     @Column(name = "decision_made_at")
     private LocalDateTime decisionMadeAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "applicant_decision_id", nullable = false)
-    private ApplicantDecisionEntity applicantDecision;
+    @Column(name = "flow_unique_id")
+    private String flowId;
+
 }

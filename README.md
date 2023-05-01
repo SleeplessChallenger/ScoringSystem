@@ -1,64 +1,104 @@
+## Scoring system
 
+- This is a system which depicts overall flow how clients and deposits are scored/assessed in the banks. It is not a
+  precise copy, but more of a blueprint which can be used as a plan.
+- During creation, I simulated certain integrations which are usually done during the process.
 
-1. Actually, there are multiple ways to send request to another microservice:
-   * RestTemplate - we need to know port directly
-   * Eureka - we don't need to know port directly and hence multiple instances on different ports run
+### Overall architecture and tech stack
 
-2. Eureka:
-   * Services register in Eureka server
-   * Then another service looks up in Eureka server
-   * If found - connect
-   * So, Eureka server knows each client IP and port
-   * If it is down - system can't work without it
-     * So, same application (spring.application.name, but different ports) will be as single
-       service with multiple instances
+**Architecture**
 
-3. In SpringCloud if we want to send request and there can be multiple instances
-   of our applications: use @LoadBalanced over i.e. RestTemplate @Bean
-    ```
-   final ResponseEntity<String> response = restTemplate.getForEntity(
-                "http://INITIAL-CHECKS/api/v1/initialChecks/{applicantId}/{depositId}",
-                String.class,
-                applicantId, depositId
-        );
-   ```
+- The system was done using microservices architecture as it enables each service to focus on the domain - DDD.
+- Moreover, microservice architecture shines in the system when we want certain parts to fail fast, but certain
+  to wait till the service will wake up. Also, it is much easier to deploy such services in containers if Docker
+  is used, or pods in K8S
 
-4. On the picture with LB we have one external load balancer which will transmit traffic
-   from the outer to the inner network. And also we have LB inside our network as we have
-   multiple instances of the app.
-   - Moreover, we have one LB with path-based routing. So, we redirect requests
-     to the appropriate LB inside
+**Tech stack**
 
-5. In reality, it is always better to choose managed load balancer like GCP, ELB rather
-   than configuring all by yourself (Spring Cloud Gateway)
-6. Why use queues for AI/Scoring models? These services can be down, but requests can wait for
-   some period in the queue (i.e. we can make picture on the front to notify applicants that
-   it is currently working). Meanwhile, queue will keep those messages. So, queue will take our
-   request and send response that it was accepted and now is being processed. After that we
-   deal with our request, but previous part of the system doesn't wait => async
-7. RabbitMQ doesn't allow you to store data in a cluster, whilst Kafka does
-   - usually brokers are run in multiple availability zones (AZ)
-8. RabbitMQ:
-   - messages first land in _exchange_
-   - _exchange_ forwards them based on the _routing pattern_ to the _binding_
-   - _binding_: it binds _exchange_ to a particular queue
-   - we can have many _exchanges_ and _queues_
-   - exchange types:
-     - direct: routing key == binding
-     - fanout: message sent to every queue
-     - topic: partial match
-     - headers: uses message header instead of routing key
-     - nameless: routing key == queue name
-   - routing key and binding
+- **Java 17**. **Java** is used as it is the most common language for such systems due to compiled-time feature and
+  backward compatibility. 17 version is chosen as it is the latest LTS one. As usual, for minimizing boilerplate
+  code I use `@Lombok` library
+- For building the project I use **maven**. As in best practices, I have main `pom.xml` with parent dependencies
+  and all child `pom`s either use something from parent `pom`s or use their own dependencies.
+    - Moreover, I have services which are used as dependencies in other services `pom`s. It is done to either separate
+      concerns or minimize code duplication as the presented code may be used in multiple services
+    - Next, in services which are SpringBoot applications (not used as complimentary tools) there are 3 main plugins
+      implemented:
+        * `maven-compiler-plugin` for compiling code
+        * `spring-boot-maven-plugin` for creating standalone application which is able to run on its own
+        * `jib-maven-plugin` for creating and pushing docker images to the **docker registry**. In our case - **Docker
+          Hub**
+- **SpringBoot**, **Spring Cloud** are used as main frameworks. Former is used for running application whilst latter
+  mainly for **Feign** and **ApiGateway** (this one is added as additional feature to see how Spring Cloud allows to
+  create it)
+- **RabbitMQ** and **Kafka** are used as brokers. Former is a queue type for decoupling __initial-checks__ service with
+  2 AI
+  services: __applicant-models__ and __deposit-checks__. And later is for decoupling 2 AI services mentioned above
+  with __final-checks__ service
+- Each service, where it is required, has **PostgreSQL** database to store data in it. Database per service is done due
+  to
+  good practice where we don't allow other services to use another service database without communication through
+  the owning service
+- Continuing with databases: also I used hibernate, not the raw one, but **Spring Data JPA**. Traditional `@Entity` and
+  `@Repository`
+- **Observability** is a pretty important factor, hence I also implemented it: logs, metrics, tracing:
+    - TODO: **logs** are to be stored in the database
+    - **metrics** - SpringBoot actuator
+    - **tracing** - Micrometer tracing using Brave. ZipKin for visualization
 
-9. If we don't end our check process due to some checks being activated, 
-   we will give request with data to the queue
-10. Observarbility:
-    - Tracing in SpringBoot: https://www.appsdeveloperblog.com/micrometer-and-zipkin-in-spring-boot
-    - https://github.com/openzipkin/zipkin/blob/master/zipkin-server/README.md#environment-variables
-    - OpenTelemetry: https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/overview.md
+### Precise explanation of each service
 
-11. Added profiles to Maven to make build & push of Docker container only with certain condition
-12. Also, I use packaging - JAR
+1. `start-scoring`
+    * It is a service which accepts request from the outer world (either through API Gateway or direct request)
+    * It accepts request: applicant and deposit. Then it saves those 2 entities into 2 tables in the database
+    * After that it sends request to the `initial-checks` service and waits for the response
+    * When response comes back there are 2 main destinations. In all cases `start-scoring` service updates last
+      interaction in those 2 tables. 2 main cases:
+        * sends **200 OK** to the user that data has been sent accepted and now in the Thread Pool Executor
+        * there is some error and service catches it and presents the error
 
-To create banner.txt - https://devops.datenkollektiv.de/banner.txt/index.html
+2. `initial-checks`
+    * It is a service which has a complex flow with many checks about _applicant_ and _deposit_
+    * At first, it accepts HTTP request from the `start-scoring` service. It saves data to its own database with
+      similar 2 tables
+    * Then it separates the request into 2 categories: applicant and deposit. Afterwards 2 separate Thread Pool
+      Executors are activated and there is a complex system which assesses those 2 entities. In current version those checks have
+      only `log` and serve as template. Each of the 2 flows has FlowContext variable which is sent from flow to flow
+      which
+      keeps all the required data about the applicant or deposit.
+    * If some check worked - it uses method in **CheckAction** abstract class which in turn calls another `@Service` which
+      sends request to the `final-checks` service bypassing all AI models services (here **FeignClient** is used).
+      `final-checks` will deal with it - persists data and sends request to the required system
+    * If everything worked well - data is sent to 2 different queues in RabbitMQ using producer:
+        * one for applicant and other - deposit TODO: retries and ack
+
+3. `applicant-models`
+    * Service responsible for scoring applicant using AI models
+    * It has Rabbit Listener, consumer, which listens to the certain queue
+    * As new data comes in, it kicks the process of scoring using the models. In current version it doesn't have AI
+      models
+    * After everything is done and decision is given, data is sent to _topic_ in Kafka dedicated for applicants
+
+4. `deposit-models`
+    * Service responsible for scoring deposit using AI models
+    * It also has Rabbit Listener, consumer, which listens to the certain queue
+    * As new data comes in, it kicks the process of scoring using the models. In current version it doesn't have AI
+      models
+    * After everything is done and decision is given, data is sent to _topic_ in Kafka dedicated for deposits
+
+5. `final-checks`
+    * It is a service which Kafka listens to new data in 2 topics: for applicants and deposits
+    * After new data comes in, it is persisted to the database
+        * **Important:** here application uses Natural Join instead of traditional foreign key as there 2 unrelated
+          topics,
+          and it would be much more difficult and resource consuming to use ids
+    * There is a Scheduled service which runs every specified time frame and takes data from the database. Of course,
+      here there is lock applied so as no race condition occurred where same data is sent
+      There are 2 main choices:
+        * Decision is ACCEPT or REJECT: data is sent to the system about decisions
+        * Decision is MANUAL: data is sent to fraud analyst
+    * Also, it has endpoint for `initial-checks` service which accepts requests from it when application failed on
+    some checks. In this case data will be persisted with REJECT decision.
+      * **Important:** here as mentioned earlier, Natural JOIN
+
+TODO: dead letter exchange in RabbitMQ

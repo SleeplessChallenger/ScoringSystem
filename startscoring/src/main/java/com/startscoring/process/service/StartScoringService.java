@@ -1,7 +1,7 @@
 package com.startscoring.process.service;
 
 import com.feign.clients.initialchecks.ApplicationRequest;
-import com.feign.clients.initialchecks.InitialCheckClient;
+import com.feign.clients.initialchecks.feigninterfaces.InitialCheckClient;
 import com.scoring.commons.utils.UuidUtils;
 import com.startscoring.process.dto.Applicant;
 import com.startscoring.process.dto.Deposit;
