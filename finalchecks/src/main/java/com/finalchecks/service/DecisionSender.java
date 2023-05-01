@@ -4,10 +4,13 @@ import com.finalchecks.dto.DecisionResultDto;
 import com.finalchecks.exceptions.ScheduledUpdateException;
 import com.finalchecks.persistence.applicant.ApplicantDecisionRepository;
 import com.finalchecks.persistence.deposit.DepositDecisionRepository;
+import com.scoring.commons.enums.Decision;
 import com.scoring.commons.enums.SentStatus;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,11 +18,20 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 @Slf4j
-@AllArgsConstructor
+@Component
+@RequiredArgsConstructor
 public class DecisionSender {
+
+    @Value("${services.concrete-decision}")
+    private String resultSystem;
+    @Value("${services.fraud-analyst}")
+    private String fraudAnalyst;
 
     private final DepositDecisionRepository depositDecisionRepository;
     private final ApplicantDecisionRepository applicantDecisionRepository;
+
+    private final RetryServiceFinalChecks retryServiceFinalChecks;
+
 
     @Scheduled(fixedDelay = 15, timeUnit = TimeUnit.MINUTES)
     public void sendDecision() {
@@ -30,6 +42,18 @@ public class DecisionSender {
 
         if (!decisionResults.isEmpty()) {
             try {
+                retryServiceFinalChecks.sendToTheSystemBasedOnCondition(decisionResults.stream()
+                                .filter(data -> data.getApplicantDecision().equals(Decision.MANUAL.name()) &&
+                                        data.getDepositDecision().equals(Decision.MANUAL.name())
+                                ).toList(),
+                        fraudAnalyst);
+
+                retryServiceFinalChecks.sendToTheSystemBasedOnCondition(decisionResults.stream()
+                                .filter(data -> !data.getApplicantDecision().equals(Decision.MANUAL.name()) &&
+                                        data.getDepositDecision().equals(Decision.MANUAL.name())
+                                ).toList(),
+                        resultSystem);
+
                 final List<String> decisionSystemIds = decisionResults.stream()
                         .map(DecisionResultDto::getDepositSystemId)
                         .toList();
@@ -47,6 +71,7 @@ public class DecisionSender {
                         ids -> applicantDecisionRepository.updateApplicantStatus(SentStatus.SENT.name(), ids),
                         applicantSystemIds
                 );
+                log.info("Sent data has been updated");
             } catch (RuntimeException ex) {
                 log.error("Error during sending data to service = {}", ex.getMessage(), ex);
             }

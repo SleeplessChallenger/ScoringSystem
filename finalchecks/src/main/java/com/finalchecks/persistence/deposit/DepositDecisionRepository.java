@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface DepositDecisionRepository extends JpaRepository<DepositDecisionEntity, Integer> {
 
+    // make application level JOIN
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     @Query(value = "select " +
             "a.applicant_system_id as applicantSystemId, " +
@@ -18,7 +19,7 @@ public interface DepositDecisionRepository extends JpaRepository<DepositDecision
             "a.applicant_final_decision as applicantDecision, " +
             "d.deposit_final_decision as depositDecision " +
             "from deposit_decision as d JOIN applicant_decision as a " +
-            "ON a.id = d.applicant_decision_id " +
+            "ON a.flow_unique_id = d.flow_unique_id " +
             "where d.deposit_final_decision = :sentStatus " +
             "and d.decision_made_at >= (NOW() - INTERVAL '12 hours') " +
             "and a.decision_made_at >= (NOW() - INTERVAL '12 hours') " +

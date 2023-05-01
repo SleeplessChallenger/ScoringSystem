@@ -12,6 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @AllArgsConstructor
@@ -23,14 +25,20 @@ public class DecisionService {
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void persistApplicantDecision(ApplicantDto applicant) {
-        final ApplicantDecisionEntity applicantDecision = ApplicantDecisionEntity.builder()
-                .applicantSystemId(applicant.getApplicantId())
-                .decisionMadeAt(applicant.getDecisionAtTime())
-                .finaDecision(applicant.getDecision().name())
-                .sentStatus(SentStatus.NOT_SENT.name())
-                .build();
-        applicantDecisionRepository.save(applicantDecision);
-        log.info("Persisted data about decision for applicant = {}", applicant.getApplicantId());
+        // search if it doesn't exist
+        final Optional<String> applicantId = applicantDecisionRepository.findByApplicantSystemId(
+                applicant.getApplicantId());
+        if (applicantId.isEmpty()) {
+            final ApplicantDecisionEntity applicantDecision = ApplicantDecisionEntity.builder()
+                    .applicantSystemId(applicant.getApplicantId())
+                    .decisionMadeAt(applicant.getDecisionAtTime())
+                    .finaDecision(applicant.getDecision().name())
+                    .sentStatus(SentStatus.NOT_SENT.name())
+                    .flowId(applicant.getFlowUniqueId())
+                    .build();
+            applicantDecisionRepository.save(applicantDecision);
+            log.info("Persisted data about decision for applicant = {}", applicant.getApplicantId());
+        }
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
@@ -40,6 +48,7 @@ public class DecisionService {
                 .decisionMadeAt(deposit.getDecisionAtTime())
                 .finalDecision(deposit.getDecision().name())
                 .sentStatus(SentStatus.NOT_SENT.name())
+                .flowId(deposit.getFlowUniqueId())
                 .build();
         depositDecisionRepository.save(depositDecision);
         log.info("Persisted data about decision for deposit = {}", deposit.getDepositId());
