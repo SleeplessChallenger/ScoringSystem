@@ -1,6 +1,7 @@
 package com.scoring.commons.dto.kafka;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.scoring.commons.enums.Decision;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,9 +14,18 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApplicantDto {
+public class ApplicantDto implements KafkaDto {
 
+    @JsonIgnore
+    private static final String DTO_NAME = "APPLICANT_DTO";
+
+    private String flowUniqueId;
     private String applicantId;
     private Decision decision;
     private LocalDateTime decisionAtTime;
+
+    @JsonIgnore
+    public String getDtoName() {
+        return DTO_NAME;
+    }
 }

@@ -39,7 +39,6 @@ public class DepositDecisionEntity {
     @Column(name = "decision_made_at")
     private LocalDateTime decisionMadeAt;
 
-    @Column(name = "applicant_decision")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "applicant_decision_id", nullable = false)
     private ApplicantDecisionEntity applicantDecision;

@@ -21,7 +21,7 @@ import java.util.Map;
 public class KafkaConsumerConfiguration {
 
     // FIXME: Read docs for partitioning and so on
-    @Value("${kafka.bootstrap-servers}")
+    @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
     public Map<String, Object> createConsumerDepositConfig() {

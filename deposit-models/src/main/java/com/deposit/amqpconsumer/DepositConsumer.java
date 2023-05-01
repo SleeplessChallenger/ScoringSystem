@@ -1,4 +1,4 @@
-package com.deposit.consumer;
+package com.deposit.amqpconsumer;
 
 import com.deposit.modelservice.ModelService;
 import com.scoring.commons.dto.kafka.DepositDto;
@@ -15,12 +15,12 @@ public class DepositConsumer {
     private final ModelService modelService;
 
     @RabbitListener(queues = "${rabbitmq.queues.deposit-models}")
-    public void consume(DepositDto payload) {
-        log.info("Consumed payload with depositId = {}", 12345);
+    public void consume(DepositDto deposit) {
+        log.info("Consumed deposit with depositId = {}", deposit.getDepositId());
         try {
-            modelService.scoreDeposit(payload);
+            modelService.scoreDeposit(deposit);
         } catch (RuntimeException ex) {
-
+            // TODO: do something if error occurred during checking applicant
         }
     }
 }

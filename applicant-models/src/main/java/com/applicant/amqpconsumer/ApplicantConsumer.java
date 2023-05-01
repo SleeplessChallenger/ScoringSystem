@@ -1,4 +1,4 @@
-package com.applicant.consumer;
+package com.applicant.amqpconsumer;
 
 import com.applicant.modelsservice.ModelService;
 import com.scoring.commons.dto.kafka.ApplicantDto;
@@ -15,10 +15,10 @@ public class ApplicantConsumer {
     private final ModelService modelService;
 
     @RabbitListener(queues = "${rabbitmq.queues.applicant-models}")
-    public void consume(ApplicantDto payload) {
-        log.info("Consumed payload with applicantId = {}", payload.getApplicantId());
+    public void consume(ApplicantDto applicant) {
+        log.info("Consumed applicant with applicantId = {}", applicant.getApplicantId());
         try {
-            modelService.scoreApplicant(payload);
+            modelService.scoreApplicant(applicant);
         } catch (RuntimeException ex) {
             // TODO: do something if error occurred during checking applicant
         }
