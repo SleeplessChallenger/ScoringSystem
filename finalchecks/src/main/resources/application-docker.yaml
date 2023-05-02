@@ -50,6 +50,6 @@ eureka:
     hostname: localhost
   client:
     service-url:
-      defaultZone: '${EUREKA_ENDPOINT:http://eureka-server:8761/eureka}
+      defaultZone: ${EUREKA_ENDPOINT:http://eureka-server:8761/eureka}
     fetch-registry: true
     register-with-eureka: true
