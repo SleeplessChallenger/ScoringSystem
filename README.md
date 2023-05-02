@@ -8,6 +8,8 @@
 
 **Architecture**
 
+![Overall architecture - Docker Compose approach](./diagrams/ScoringSystem.jpg)
+
 - The system was done using microservices architecture as it enables each service to focus on the domain - DDD.
 - Moreover, microservice architecture shines in the system when we want certain parts to fail fast, but certain
   to wait till the service will wake up. Also, it is much easier to deploy such services in containers if Docker
@@ -100,5 +102,3 @@
     * Also, it has endpoint for `initial-checks` service which accepts requests from it when application failed on
     some checks. In this case data will be persisted with REJECT decision.
       * **Important:** here as mentioned earlier, Natural JOIN
-
-TODO: dead letter exchange in RabbitMQ
