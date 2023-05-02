@@ -62,3 +62,5 @@
 12. Also, I use packaging - JAR
 
 To create banner.txt - https://devops.datenkollektiv.de/banner.txt/index.html
+
+13. TODO: dead letter exchange in RabbitMQ
