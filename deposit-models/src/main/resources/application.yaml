@@ -17,7 +17,7 @@ spring:
   application:
     name: deposit-models
   rabbitmq:
-    addresses: 'localhost:5672' # TODO: put label to apply in K8S further
+    addresses: 'localhost:5672'
 
 rabbitmq:
   exchanges:

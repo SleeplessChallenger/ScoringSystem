@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8086
 
 management:
   tracing:
@@ -10,27 +10,46 @@ management:
 
 logging.pattern.level: "trace_id=%mdc{traceId} span_id=%mdc{spanId} trace_flags=%mdc{traceFlags} %p"
 
+app:
+  executor:
+    threadsPerProcessor: 10
 spring:
+  kafka:
+    bootstrap-servers: 'kafka:9092'
   application:
-    name: start-scoring
+    name: final-checks
   datasource:
     username: ${DB_USERNAME:sleeplesschallenger}
     password: ${DB_PASSWORD:superSecret}
-    url: ${DB_CONNECTION:jdbc:postgresql://postgres-start:5434/postgres-start-scoring-db}
+    url: ${DB_CONNECTION:jdbc:postgresql://postgres-final-checks:5432/postgres-final-checks-db}
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: 'true'
     hibernate:
-      ddl-auto: update
-    show-sql: 'true'
+      ddl-auto: create-drop
+      show-sql: 'true'
   zipkin:
     base-url: ${ZIPKIN_BASE_URL:http://zipkin-tracing:9411}
 
+services:
+  concrete-decision: ''
+  fraud-analyst: ''
+
+kafka-custom:
+  deposit:
+    groupId: ${KAFKA_DEPOSIT_GROUP_ID:deposit}
+    topic: ${KAFKA_DEPOSIT_TOPIC:deposit-topic}
+  applicant:
+    groupId: ${KAFKA_APPLICANT_GROUP_ID:applicant}
+    topic: ${KAFKA_APPLICANT_TOPIC:applicant-topic}
+
 eureka:
+  instance:
+    hostname: localhost
   client:
     service-url:
-      defaultZone: ${EUREKA_ENDPOINT:http://eureka-server:8761/eureka}
+      defaultZone: '${EUREKA_ENDPOINT:http://eureka-server:8761/eureka}
     fetch-registry: true
     register-with-eureka: true

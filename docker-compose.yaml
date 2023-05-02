@@ -56,7 +56,7 @@ services:
       - postgres-scoring
     restart: unless-stopped
   zipkin:
-    container_name: zipkin-tracing
+    container_name: zipkin
     image: openzipkin/zipkin
     networks:
       - spring
@@ -71,6 +71,32 @@ services:
       - "15672:15672"
     networks:
       - spring
+  zookeeper:
+    image: docker.io/bitnami/zookeeper:3.8
+    container_name: zookeeper-container
+    ports:
+      - "2181:2181"
+    volumes:
+      - "zookeeper_data:/bitnami"
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
+  kafka:
+    image: docker.io/bitnami/kafka:3.4
+    container_name: kafka-container
+    ports:
+      - "9092:9092"
+    volumes:
+      - "kafka_data:/bitnami"
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    depends_on:
+      - zookeeper
   eureka-server:
     image: enoshima/eureka-server:latest
     container_name: eureka-server
@@ -102,6 +128,7 @@ services:
       - "8081:8081"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      - DB_CONNECTION=jdbc:postgresql://postgres-start:5432/postgres-start-scoring-db
     networks:
       - spring
       - postgres-scoring
@@ -109,6 +136,7 @@ services:
       - zipkin
       - postgres-start
       - eureka-server
+      - api-gateway
   initial-checks:
     image: enoshima/initialchecks:latest
     container_name: initial-checks
@@ -116,6 +144,7 @@ services:
       - "8082:8082"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      - DB_CONNECTION=jdbc:postgresql://postgres-checks:5432/initial-checks-db
     networks:
       - spring
       - postgres-scoring
@@ -124,8 +153,9 @@ services:
       - postgres-checks
       - rabbitmq
       - eureka-server
+      - start-scoring
   applicant-models:
-    image: enoshima/applicantmodels:latest
+    image: enoshima/applicant-models:latest
     container_name: applicant-models
     ports:
       - "8083:8083"
@@ -136,11 +166,12 @@ services:
       - postgres-scoring
     depends_on:
       - zipkin
-      - postgres-checks
       - rabbitmq
+      - zookeeper
+      - kafka
       - eureka-server
   deposit-models:
-    image: enoshima/depositmodels:latest
+    image: enoshima/deposit-models:latest
     container_name: deposit-models
     ports:
       - "8084:8084"
@@ -151,12 +182,13 @@ services:
       - postgres-scoring
     depends_on:
       - zipkin
-      - postgres-checks
       - rabbitmq
+      - zookeeper
+      - kafka
       - eureka-server
   final-checks:
     image: enoshima/finalchecks:latest
-    container_name: initial-checks
+    container_name: final-checks
     ports:
       - "8085:8085"
     environment:
@@ -166,11 +198,9 @@ services:
       - postgres-scoring
     depends_on:
       - zipkin
-      - postgres-checks
-      - rabbitmq
+      - postgres-final-checks
       - eureka-server
-
-# TODO: add application-docker.yaml to models microservices and here
+      - initial-checks
 
 networks:
   postgres-scoring:
@@ -181,3 +211,7 @@ networks:
 volumes:
   postgres:
   pgadmin:
+  zookeeper_data:
+    driver: local
+  kafka_data:
+    driver: local
