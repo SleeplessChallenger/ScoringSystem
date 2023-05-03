@@ -67,8 +67,8 @@
 
 2. `initial-checks`
     * It is a service which has a complex flow with many checks about _applicant_ and _deposit_
-    * At first, it accepts HTTP request from the `start-scoring` service. It saves data to its own database with
-      similar 2 tables
+    * At first, it accepts HTTP request from the `start-scoring` service. It saves data to its own database with only one table.
+        This table holds data about `applicantId`, `depositId` and `createdAt`.
     * Then it separates the request into 2 categories: applicant and deposit. Afterwards 2 separate Thread Pool
       Executors are activated and there is a complex system which assesses those 2 entities. In current version those checks have
       `log` and serve as a template (plus random case that REJECT decision has been made during those checks). Each of the 
@@ -107,7 +107,6 @@
     some checks in that service. In this case data will be persisted with REJECT decision.
       * **Important:** here as mentioned earlier, there are 2 separate tables which will be JOINed in Scheduled using Natural JOIN
 
-
 ### Initial-Checks microservice flow
 
 * Here there is a class UML diagram which depicts how classes in the flow depend on each other
@@ -115,3 +114,41 @@
 [Link to the image](diagrams-jpg/InitialChecksFlow.jpg)
 
 ![Overall architecture - Docker Compose approach](diagrams-jpg/InitialChecksFlow.jpg)
+
+* Everything starts with a `InitialChecksController`. It accepts request from `StartScoring` service and persists in a dedicated table.
+* Then `InitialChecksService` kicks in which gets 2 separate flows for **applicant** and **deposit**: `ApplicantFlow` and `DepositFlow`
+  with one parent - `CheckFlow`:
+  * Each **Flow** has String names of **Actions** and **ErrorActions**. In the constructor of each flow there is a `BeanLoader` class
+    which accepts String name of the class and class type (here I use parent classes: `CheckAction` and `ErrorAction`). Then it gets
+    those classes from **Spring ApplicationContext** (as those actions are `@Service`). Then those classes go to the `CheckFlow` where
+    they are attached to `flowName` and `flowActions` which are got from ApplicationContext.
+  * Afterwards, `CheckFlow` gets **Autowired** to the `FlowProvider` via `CheckFlow` parent class => `ApplicantFlow` and `DepositFlow`
+    are triggered being children and injection (aka autowiring) happens due to those classes being `@Component`. Then the chain above is activated.
+* More info about `CheckAction` hierarchy:
+  * `CheckAction` abstract class and `ErrorAction` interface which have children in the hierarchy. For now, they can be
+    seen in `com.initialchecks.process.flow.checkactions` 
+  * Each child of `CheckAction` has checks to which verify the applicant or deposit. If some check pans out - it uses
+    `RetryServiceInitialChecks` `@Service` to make a request to `Final-Checks` microservice via REST
+  * If no check works - produces message to applicant and deposit queues in RabbitMQ
+* In `CheckEngine` there is an iteration over `CheckAction`s children where those actions are activated via abstract method
+  in abstract class
+    * If some error is caught - we switch to error action in `CheckEngine`
+* Example of flow iteration with error handling:
+
+```
+for (Pair<CheckAction, ErrorAction> actionPair : actions) {
+    final CheckAction action = actionPair.getFirst();
+    final ErrorAction errorAction = actionPair.getSecond();
+
+    try {
+        action.makeCheck(flowContext);
+    } catch (RuntimeException ex) {
+        log.error("Error while processing flow = {}, action = {}",
+                flowContext.getFlowName(),
+                action.getActionName(),
+                ex
+        );
+        errorAction.handleError(flowContext);
+    }
+}
+```
