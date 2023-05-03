@@ -4,12 +4,12 @@ import com.initialchecks.process.dto.FlowContext;
 import com.initialchecks.process.flow.checkactions.CheckAction;
 import com.initialchecks.process.service.RetryServiceInitialChecks;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Random;
 
 @Slf4j
-@Component
+@Service
 public class ConditionsAction extends CheckAction {
     public static final String ACTION_NAME = "conditionsAction";
 
