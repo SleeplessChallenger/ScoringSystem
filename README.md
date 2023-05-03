@@ -8,7 +8,9 @@
 
 **Architecture**
 
-![Overall architecture - Docker Compose approach](./diagrams/ScoringSystem.jpg)
+[Link to the image](diagrams-jpg/ScoringSystem.jpg)
+
+![Overall architecture - Docker Compose approach](./diagrams-jpg/ScoringSystem.jpg)
 
 - The system was done using microservices architecture as it enables each service to focus on the domain - DDD.
 - Moreover, microservice architecture shines in the system when we want certain parts to fail fast, but certain
@@ -50,7 +52,9 @@
 
 ### Precise explanation of each service
 
-<img src="./diagrams/ScoringFlow.jpg" height="450px"/>
+[Link to the image](diagrams-jpg/ScoringFlow.jpg)
+
+<img src="./diagrams-jpg/ScoringFlow.jpg" height="450px"/>
 
 1. `start-scoring`
     * It is a service which accepts requests from the outer world (either through API Gateway or direct request)
@@ -102,3 +106,12 @@
     * Also, it has endpoint for `initial-checks` service which accepts requests from it when application failed on
     some checks in that service. In this case data will be persisted with REJECT decision.
       * **Important:** here as mentioned earlier, there are 2 separate tables which will be JOINed in Scheduled using Natural JOIN
+
+
+### Initial-Checks microservice flow
+
+* Here there is a class UML diagram which depicts how classes in the flow depend on each other
+
+[Link to the image](diagrams-jpg/InitialChecksFlow.jpg)
+
+![Overall architecture - Docker Compose approach](diagrams-jpg/InitialChecksFlow.jpg)

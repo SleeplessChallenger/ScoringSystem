@@ -16,7 +16,7 @@ spring:
   datasource:
     username: ${DB_USERNAME:sleeplesschallenger}
     password: ${DB_PASSWORD:superSecret}
-    url: ${DB_CONNECTION:jdbc:postgresql://postgres-start:5434/postgres-start-scoring-db}
+    url: ${DB_CONNECTION:jdbc:postgresql://postgres-start:5432/postgres-start-scoring-db}
   jpa:
     properties:
       hibernate:

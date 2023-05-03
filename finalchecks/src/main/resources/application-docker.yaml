@@ -28,7 +28,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: 'true'
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
       show-sql: 'true'
   zipkin:
     base-url: ${ZIPKIN_BASE_URL:http://zipkin-tracing:9411}
@@ -50,6 +50,6 @@ eureka:
     hostname: localhost
   client:
     service-url:
-      defaultZone: '${EUREKA_ENDPOINT:http://eureka-server:8761/eureka}
+      defaultZone: ${EUREKA_ENDPOINT:http://eureka-server:8761/eureka}
     fetch-registry: true
     register-with-eureka: true
