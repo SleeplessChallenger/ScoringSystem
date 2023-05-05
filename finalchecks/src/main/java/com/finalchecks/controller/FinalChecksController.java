@@ -5,6 +5,7 @@ import com.finalchecks.service.DecisionService;
 import com.scoring.commons.dto.kafka.ApplicantDto;
 import com.scoring.commons.dto.kafka.DepositDto;
 import com.scoring.commons.enums.Decision;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,13 @@ public class FinalChecksController {
 
     private final DecisionService decisionService;
 
+    /**
+     Transactional over method as we don't need to persist only one part - applicant and deposit
+     both must succeed. And there is only one way for application - from Kafka or from REST.
+     Hence, there won't be any duplicates
+     */
+
+    @Transactional
     @PostMapping(path = "reject/{requestId}")
     public ResponseEntity<String> acceptRejectDecision(@PathVariable("requestId") @NotBlank String requestId,
                                                        @RequestBody @Valid RejectDecision rejectDecision) {
@@ -30,16 +38,8 @@ public class FinalChecksController {
         log.info("Accepted REJECT request from applicant = {} and deposit = {}. Flow id = {}",
                 applicantId, depositId, flowId);
 
-        try {
-            // Without successful applicant no way to save deposit
-            persistApplicant(applicantId, rejectDecision);
-            persistDeposit(depositId, rejectDecision);
-        } catch (RuntimeException ex) {
-            log.error("Error during persisting data = {}", ex.getMessage(), ex);
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(ex.getMessage());
-        }
+        persistApplicant(applicantId, rejectDecision);
+        persistDeposit(depositId, rejectDecision);
 
         log.info("Data about applicant = {}, deposit = {} in flow = {} has been persisted",
                 applicantId, depositId, flowId);

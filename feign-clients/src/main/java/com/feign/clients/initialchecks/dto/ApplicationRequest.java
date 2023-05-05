@@ -1,4 +1,4 @@
-package com.feign.clients.initialchecks;
+package com.feign.clients.initialchecks.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
