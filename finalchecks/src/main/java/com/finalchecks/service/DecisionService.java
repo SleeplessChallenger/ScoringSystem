@@ -12,8 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Slf4j
 @Service
 @AllArgsConstructor
@@ -23,25 +21,20 @@ public class DecisionService {
     private final ApplicantDecisionRepository applicantDecisionRepository;
 
 
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    @Transactional
     public void persistApplicantDecision(ApplicantDto applicant) {
-        // search if it doesn't exist
-        final Optional<String> applicantId = applicantDecisionRepository.findByApplicantSystemId(
-                applicant.getApplicantId());
-        if (applicantId.isEmpty()) {
-            final ApplicantDecisionEntity applicantDecision = ApplicantDecisionEntity.builder()
-                    .applicantSystemId(applicant.getApplicantId())
-                    .decisionMadeAt(applicant.getDecisionAtTime())
-                    .finaDecision(applicant.getDecision().name())
-                    .sentStatus(SentStatus.NOT_SENT.name())
-                    .flowId(applicant.getFlowUniqueId())
-                    .build();
-            applicantDecisionRepository.save(applicantDecision);
-            log.info("Persisted data about decision for applicant = {}", applicant.getApplicantId());
-        }
+        final ApplicantDecisionEntity applicantDecision = ApplicantDecisionEntity.builder()
+                .applicantSystemId(applicant.getApplicantId())
+                .decisionMadeAt(applicant.getDecisionAtTime())
+                .finaDecision(applicant.getDecision().name())
+                .sentStatus(SentStatus.NOT_SENT.name())
+                .flowId(applicant.getFlowUniqueId())
+                .build();
+        applicantDecisionRepository.save(applicantDecision);
+        log.info("Persisted data about decision for applicant = {}", applicant.getApplicantId());
     }
 
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    @Transactional
     public void persistDepositDecision(DepositDto deposit) {
         final DepositDecisionEntity depositDecision = DepositDecisionEntity.builder()
                 .depositSystemId(deposit.getDepositId())

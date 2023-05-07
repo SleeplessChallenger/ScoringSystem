@@ -87,7 +87,7 @@ services:
     image: confluentinc/cp-kafka:latest
     container_name: kafka-container
     ports:
-      - "9092:9092"
+      - "29092:29092"
     volumes:
       - "kafka_data:/bitnami"
     environment:

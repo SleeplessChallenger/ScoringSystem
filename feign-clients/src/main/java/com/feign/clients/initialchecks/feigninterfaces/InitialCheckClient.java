@@ -1,6 +1,6 @@
 package com.feign.clients.initialchecks.feigninterfaces;
 
-import com.feign.clients.initialchecks.ApplicationRequest;
+import com.feign.clients.initialchecks.dto.ApplicationRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.cloud.openfeign.FeignClient;

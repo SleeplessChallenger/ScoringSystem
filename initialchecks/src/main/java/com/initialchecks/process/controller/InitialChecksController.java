@@ -1,6 +1,6 @@
 package com.initialchecks.process.controller;
 
-import com.feign.clients.initialchecks.ApplicationRequest;
+import com.feign.clients.initialchecks.dto.ApplicationRequest;
 import com.initialchecks.process.dto.ApplicationCheck;
 import com.initialchecks.process.service.InitialChecksService;
 import jakarta.validation.Valid;

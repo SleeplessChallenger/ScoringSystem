@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ApplicantDecisionRepository extends JpaRepository<ApplicantDecisionEntity, Integer> {
 
@@ -17,8 +16,4 @@ public interface ApplicantDecisionRepository extends JpaRepository<ApplicantDeci
     void updateApplicantStatus(@Param("sentStatus") String sentStatus,
                                @Param("allSystemIds") List<String> allSystemIds);
 
-    @Query(value = "select applicant_system_id " +
-            "from {h-schema}applicant_decision as a " +
-            "where a.applicant_system_id = :systemId", nativeQuery = true)
-    Optional<String> findByApplicantSystemId(@Param("systemId") String systemId);
 }
