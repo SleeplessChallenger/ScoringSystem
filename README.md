@@ -107,6 +107,11 @@
     some checks in that service. In this case data will be persisted with REJECT decision.
       * **Important:** here as mentioned earlier, there are 2 separate tables which will be JOINed in Scheduled using Natural JOIN
 
+* Below you can see ER diagram of the database in the microservices
+[Link to the image](diagrams-jpg/DatabaseER.jpg)
+
+![Database ER diagram](diagrams-jpg/DatabaseER.jpg)
+
 ### Initial-Checks microservice flow
 
 * Here there is a class UML diagram which depicts how classes in the flow depend on each other
