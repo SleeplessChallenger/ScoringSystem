@@ -17,26 +17,26 @@ import java.time.LocalDateTime;
 public class ApplicantDecisionEntity {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", unique = true, nullable = false)
     @SequenceGenerator(name = "applicant_decision_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "applicant_decision_id")
     private Integer id;
 
-    @Column(name = "applicant_final_decision")
+    @Column(name = "applicant_final_decision", nullable = false)
     private String finaDecision;
 
     // System id refers to the id in the whole system
-    @Column(name = "applicant_system_id")
+    @Column(name = "applicant_system_id", nullable = false)
     private String applicantSystemId;
 
-    @Column(name = "sent")
+    @Column(name = "sent", nullable = false)
     private String sentStatus;
 
-    @Column(name = "decision_made_at")
+    @Column(name = "decision_made_at", nullable = false)
     private LocalDateTime decisionMadeAt;
 
-    @Column(name = "flow_unique_id")
+    @Column(name = "flow_unique_id", nullable = false)
     private String flowId;
 
 }

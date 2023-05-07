@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class DepositDecisionEntity {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", unique = true, nullable = false)
     @SequenceGenerator(name = "deposit_id_sequence")
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
@@ -26,20 +26,20 @@ public class DepositDecisionEntity {
     )
     private Integer id;
 
-    @Column(name = "deposit_final_decision")
+    @Column(name = "deposit_final_decision", nullable = false)
     private String finalDecision;
 
     // System id refers to the id in the whole system
-    @Column(name = "deposit_system_id")
+    @Column(name = "deposit_system_id", nullable = false)
     private String depositSystemId;
 
-    @Column(name = "sent")
+    @Column(name = "sent", nullable = false)
     private String sentStatus;
 
-    @Column(name = "decision_made_at")
+    @Column(name = "decision_made_at", nullable = false)
     private LocalDateTime decisionMadeAt;
 
-    @Column(name = "flow_unique_id")
+    @Column(name = "flow_unique_id", nullable = false)
     private String flowId;
 
 }
