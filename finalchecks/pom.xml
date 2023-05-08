@@ -27,6 +27,11 @@
             <version>42.3.8</version>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>4.21.0</version> <!--default version with this SpringBoot is 4.17.2-->
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.kafka</groupId>

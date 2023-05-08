@@ -11,6 +11,8 @@ management:
 logging.pattern.level: "trace_id=%mdc{traceId} span_id=%mdc{spanId} trace_flags=%mdc{traceFlags} %p"
 
 spring:
+  liquibase:
+    change-log: 'classpath:db/changelog/changelog-initial-checks.yaml'
   application:
     name: initial-checks
   datasource:
