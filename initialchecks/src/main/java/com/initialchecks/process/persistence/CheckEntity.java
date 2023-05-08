@@ -25,9 +25,9 @@ public class CheckEntity {
     )
     private Integer id;
 
-    @Column(name = "applicant_id", nullable = false)
+    @Column(name = "applicant_id", nullable = false, unique = true)
     private String applicantId;
-    @Column(name = "deposit_id", nullable = false)
+    @Column(name = "deposit_id", nullable = false, unique = true)
     private String depositId;
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

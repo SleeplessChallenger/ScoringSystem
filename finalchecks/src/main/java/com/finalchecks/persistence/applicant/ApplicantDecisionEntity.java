@@ -27,7 +27,7 @@ public class ApplicantDecisionEntity {
     private String finaDecision;
 
     // System id refers to the id in the whole system
-    @Column(name = "applicant_system_id", nullable = false)
+    @Column(name = "applicant_system_id", nullable = false, unique = true)
     private String applicantSystemId;
 
     @Column(name = "sent", nullable = false)
@@ -36,7 +36,7 @@ public class ApplicantDecisionEntity {
     @Column(name = "decision_made_at", nullable = false)
     private LocalDateTime decisionMadeAt;
 
-    @Column(name = "flow_unique_id", nullable = false)
+    @Column(name = "flow_unique_id", nullable = false, unique = true)
     private String flowId;
 
 }

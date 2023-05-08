@@ -30,7 +30,7 @@ public class DepositDecisionEntity {
     private String finalDecision;
 
     // System id refers to the id in the whole system
-    @Column(name = "deposit_system_id", nullable = false)
+    @Column(name = "deposit_system_id", nullable = false, unique = true)
     private String depositSystemId;
 
     @Column(name = "sent", nullable = false)
@@ -39,7 +39,7 @@ public class DepositDecisionEntity {
     @Column(name = "decision_made_at", nullable = false)
     private LocalDateTime decisionMadeAt;
 
-    @Column(name = "flow_unique_id", nullable = false)
+    @Column(name = "flow_unique_id", nullable = false, unique = true)
     private String flowId;
 
 }

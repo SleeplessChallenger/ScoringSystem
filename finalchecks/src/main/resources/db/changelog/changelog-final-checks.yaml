@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changeset/create_applicant_decision_table.sql
+  - include:
+      file: db/changelog/changeset/create_deposit_decision_table.sql
