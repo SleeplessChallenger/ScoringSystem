@@ -22,7 +22,6 @@ public class StartScoringController {
 
     private final StartScoringService startScoringService;
 
-    // TODO: use liquibase
     @PostMapping
     public ResponseEntity<String> acceptScoring(@RequestBody @Valid Application application) {
         final String applicantId = application.getApplicant().getId();
