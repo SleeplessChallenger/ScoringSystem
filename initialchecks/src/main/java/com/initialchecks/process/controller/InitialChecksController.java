@@ -26,8 +26,6 @@ public class InitialChecksController {
                                                    @RequestBody @Valid ApplicationRequest applicationRequest) {
         final String applicantId = applicationRequest.getApplicantId();
         final String depositId = applicationRequest.getDepositId();
-        log.info("Request = {}. Started checking application with userId = {} and depositId = {}",
-                requestId, applicantId, depositId);
 
         final ApplicationCheck applicationCheck = ApplicationCheck.builder()
                 .createdAt(LocalDateTime.now())

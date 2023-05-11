@@ -77,7 +77,8 @@ services:
     ports:
       - "22181:2181"
     volumes:
-      - "zookeeper_data:/bitnami"
+      - ./tmp/docker/zookeeper/data:/var/lib/zookeeper/data
+      - ./tmp/docker/zookeeper/logs:/var/lib/zookeeper/log
     environment:
       - ZOOKEEPER_CLIENT_PORT=2181
       - ZOOKEEPER_TICK_TIME=2000
@@ -88,8 +89,9 @@ services:
     container_name: kafka-container
     ports:
       - "29092:29092"
+      - "9092:9092"
     volumes:
-      - "kafka_data:/bitnami"
+      - ./tmp/docker/kafka/data:/var/lib/kafka/data
     environment:
       - KAFKA_BROKER_ID=1
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
