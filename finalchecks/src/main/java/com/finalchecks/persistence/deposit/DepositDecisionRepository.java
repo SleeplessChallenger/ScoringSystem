@@ -26,8 +26,6 @@ public interface DepositDecisionRepository extends JpaRepository<DepositDecision
             "FOR UPDATE SKIP LOCKED", nativeQuery = true)
     List<DecisionResultDto> findNotSentApplications(@Param("sentStatus") String sentStatus);
 
-    // TODO: add liquibase and put there query with indexing DECISION row
-
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     @Modifying(flushAutomatically = true)
     @Query(value = "UPDATE {h-schema}deposit_decision SET sent = :sentStatus where deposit_system_id in :allSystemIds",

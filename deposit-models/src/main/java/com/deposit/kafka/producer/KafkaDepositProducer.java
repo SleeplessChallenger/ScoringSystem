@@ -19,7 +19,13 @@ public class KafkaDepositProducer {
     private final KafkaTemplate<String, DepositDto> kafkaTemplate;
 
     public void produceMessage(DepositDto deposit) {
-        log.info("Start sending message to deposit topic");
-        kafkaTemplate.send(topic, deposit);
+        try {
+            log.info("Start sending message to deposit topic");
+            kafkaTemplate.send(topic, deposit);
+            log.info("Successfully persisted data to topic = {}", topic);
+        } catch (RuntimeException ex) {
+            log.error("Error during persisting data to Kafka. Topic = {}", topic);
+            // TODO: add meterRegistry
+        }
     }
 }

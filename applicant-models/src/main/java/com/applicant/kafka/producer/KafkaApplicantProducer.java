@@ -18,7 +18,13 @@ public class KafkaApplicantProducer {
     private final KafkaTemplate<String, ApplicantDto> kafkaTemplate;
 
     public void produceMessage(ApplicantDto applicant) {
-        log.info("Start sending message to applicant topic");
-        kafkaTemplate.send(topic, applicant);
+        try {
+            log.info("Start sending message to applicant topic");
+            kafkaTemplate.send(topic, applicant);
+            log.info("Successfully persisted data to topic = {}", topic);
+        } catch (RuntimeException ex) {
+            log.error("Error during persisting data to Kafka. Topic = {}", topic);
+            // TODO: add meterRegistry
+        }
     }
 }
