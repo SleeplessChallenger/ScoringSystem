@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public interface DepositRepository extends JpaRepository<DepositEntity, Integer> {
 
     @Modifying(flushAutomatically = true)
-    @Query(value = "UPDATE {h-schema}deposit SET updated_at = :updatedAt where deposit_system_id = :depositId",
+    @Query(value = "UPDATE {h-schema}deposits SET updated_at = :updatedAt where deposit_system_id = :depositId",
             nativeQuery = true)
     void updateDepositInteraction(@Param("updatedAt") LocalDateTime updatedAt, @Param("depositId") String depositId);
 }

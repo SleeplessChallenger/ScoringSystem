@@ -13,10 +13,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class KafkaApplicantConsumer {
 
-    @Value("${kafka-custom.deposit.topic}")
+    @Value("${kafka-custom.applicant.topic}")
     private String topicName;
 
-    @Value("${kafka-custom.deposit.groupId}")
+    @Value("${kafka-custom.applicant.groupId}")
     private String groupId;
 
     private final DecisionService decisionService;

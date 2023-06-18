@@ -12,6 +12,14 @@
     <artifactId>feign-clients</artifactId>
     <packaging>jar</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.scoring</groupId>
+            <artifactId>common-tools</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <!--we don't put spring-boot-maven-plugin here as this module doesn't have SpringBoot run file-->
         <finalName>feign-clients-module</finalName>

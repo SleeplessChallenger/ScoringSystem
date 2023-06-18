@@ -3,6 +3,7 @@ package com.initialchecks.process.flow.checkactions.applicantactions;
 import com.initialchecks.process.dto.FlowContext;
 import com.initialchecks.process.flow.checkactions.CheckAction;
 import com.initialchecks.process.service.RetryServiceInitialChecks;
+import com.scoring.commons.enums.TypeIdentifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,7 @@ public class IncomeAction extends CheckAction {
         // if some rule worked
         int someRandomCondition = new Random().nextInt(1, 10);
         if (someRandomCondition > 5) {
-            sendRejectDecision(context);
+            sendRejectDecision(context, TypeIdentifier.APPLICANT);
         } else {
             // continue
         }
