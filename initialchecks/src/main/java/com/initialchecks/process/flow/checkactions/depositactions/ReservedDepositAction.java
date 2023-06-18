@@ -15,7 +15,6 @@ public class ReservedDepositAction extends CheckAction {
         super(retryServiceInitialChecks);
     }
 
-
     @Override
     public void makeCheck(FlowContext context) {
         log.info("Flow = {}, action = {}. Processing deposit = {}",
