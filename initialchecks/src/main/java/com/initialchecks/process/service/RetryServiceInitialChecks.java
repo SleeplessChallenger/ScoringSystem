@@ -3,6 +3,7 @@ package com.initialchecks.process.service;
 import com.feign.clients.finalchecks.dto.RejectDecision;
 import com.feign.clients.finalchecks.feigninterfaces.FinalChecksClient;
 import com.initialchecks.process.dto.FlowContext;
+import com.scoring.commons.enums.TypeIdentifier;
 import com.scoring.commons.utils.UuidUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +21,13 @@ public class RetryServiceInitialChecks {
 
     private final FinalChecksClient finalChecksClient;
 
+    /**
+     * Here retries are done not on the Feign level, but on the application level.
+     */
     @Retryable(maxAttempts = 3,
             backoff = @Backoff(delay = 15, maxDelay = 25, multiplier = 1.5),
             retryFor = {RuntimeException.class})
-    public void sendRejectDecision(FlowContext flowContext) {
+    public void sendRejectDecision(FlowContext flowContext, TypeIdentifier typeIdentifier) {
         log.info("Start sending data to final checks, Retry = {}",
                 RetrySynchronizationManager.getContext().getRetryCount());
         final String requestId = UuidUtils.generateUuid();
@@ -35,10 +39,14 @@ public class RetryServiceInitialChecks {
                 .depositId(depositId)
                 .uniqueFlowId(flowUniqueId)
                 .sentTime(LocalDateTime.now())
+                .typeIdentifier(typeIdentifier)
                 .build();
 
         finalChecksClient.sendRejectDecision(requestId, rejectDecision);
-        log.info("REJECT decision about applicant = {}, deposit = {}, flow = {} has been sent",
-                applicantId, depositId, flowUniqueId);
+        logRejectDecision(flowUniqueId, typeIdentifier);
+    }
+
+    private static void logRejectDecision(String flowUniqueId, TypeIdentifier typeIdentifier) {
+        log.info("Reject decision about = {} has been sent. FlowId = {}", typeIdentifier.getType(), flowUniqueId);
     }
 }

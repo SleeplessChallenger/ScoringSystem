@@ -1,6 +1,7 @@
 package com.startscoring.process.controller;
 
 import com.scoring.commons.exceptions.InitialChecksException;
+import com.scoring.commons.exceptions.StartScoringPersistenceException;
 import com.startscoring.process.dto.Application;
 import com.startscoring.process.persistence.customer.ApplicantEntity;
 import com.startscoring.process.service.StartScoringService;
@@ -28,8 +29,7 @@ public class StartScoringController {
         final String depositId = application.getDeposit().getDepositId();
         log.info("Accepted request from customer = {} and depositId = {}", applicantId, depositId);
 
-        final ApplicantEntity applicantEntity = startScoringService.registerApplicant(application.getApplicant());
-        startScoringService.registerDeposit(application.getDeposit(), applicantEntity);
+        persistApplicantDeposit(application);
 
         try {
             startScoringService.startInitialChecks(applicantId, depositId);
@@ -48,5 +48,15 @@ public class StartScoringController {
                         "Accepted request from customer = %s and deposit = %s. Now it is in process",
                         applicantId, depositId)
                 );
+    }
+
+    private void persistApplicantDeposit(Application application) {
+        try {
+            final ApplicantEntity applicantEntity = startScoringService.registerApplicant(application.getApplicant());
+            startScoringService.registerDeposit(application.getDeposit(), applicantEntity);
+        } catch (RuntimeException ex) {
+            log.error("Error during persisting data to the database", ex);
+            throw new StartScoringPersistenceException(ex);
+        }
     }
 }

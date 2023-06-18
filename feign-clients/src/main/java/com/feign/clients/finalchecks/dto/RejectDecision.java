@@ -1,5 +1,6 @@
 package com.feign.clients.finalchecks.dto;
 
+import com.scoring.commons.enums.TypeIdentifier;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -23,4 +24,6 @@ public class RejectDecision {
     private String uniqueFlowId;
     @NotNull
     private LocalDateTime sentTime;
+    @NotNull
+    private TypeIdentifier typeIdentifier;
 }
