@@ -21,10 +21,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: 'true'
+        format_sql: true
     hibernate:
       ddl-auto: update
-    show-sql: 'true'
+    show-sql: true
   zipkin:
     base-url: ${ZIPKIN_BASE_URL:http://zipkin-tracing:9411}
 

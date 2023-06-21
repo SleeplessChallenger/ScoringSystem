@@ -57,7 +57,7 @@ public class FinalChecksController {
 
     private void persistApplicant(RejectDecision rejectDecision) {
         final String applicantId = rejectDecision.getApplicantId();
-        log.info("Persisting applicant = {}", applicantId);
+        log.info("Persisting applicant = {} with REJECT in controller", applicantId);
         try {
             final String uniqueFlowId = rejectDecision.getUniqueFlowId();
             decisionService.persistApplicantDecision(ApplicantDto.builder()
@@ -75,7 +75,7 @@ public class FinalChecksController {
 
     private void persistDeposit(RejectDecision rejectDecision) {
         final String depositId = rejectDecision.getDepositId();
-        log.info("Persisting deposit = {}", depositId);
+        log.info("Persisting deposit = {} with REJECT in controller", depositId);
         try {
             final String uniqueFlowId = rejectDecision.getUniqueFlowId();
             decisionService.persistDepositDecision(DepositDto.builder()
