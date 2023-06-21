@@ -12,6 +12,9 @@ import com.startscoring.process.persistence.deposit.DepositRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.retry.support.RetrySynchronizationManager;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -62,7 +65,12 @@ public class StartScoringService {
         log.info("Saved deposit with id = {}", deposit.getDepositId());
     }
 
+    @Retryable(maxAttempts = 3,
+            backoff = @Backoff(delay = 15, maxDelay = 25, multiplier = 1.5),
+            retryFor = {RuntimeException.class})
     public void startInitialChecks(String applicantId, String depositId) {
+        log.info("Making request to the Initial-Checks service applicant = {}, deposit = {}. Retry count= {}",
+                applicantId, depositId, RetrySynchronizationManager.getContext().getRetryCount());
         final String requestId = UuidUtils.generateUuid();
         initialCheckClient.checkApplication(requestId,
                 ApplicationRequest.builder()

@@ -12,6 +12,7 @@ import org.springframework.kafka.config.KafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
+import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import java.util.HashMap;
@@ -20,6 +21,12 @@ import java.util.Map;
 @Configuration
 public class KafkaConsumerConfiguration {
 
+    @Value("${kafka-custom.deposit.groupId}")
+    private String depositGroupId;
+
+    @Value("${kafka-custom.applicant.groupId}")
+    private String applicantGroupId;
+
     // FIXME: Read docs for partitioning and so on
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
@@ -27,19 +34,21 @@ public class KafkaConsumerConfiguration {
     public Map<String, Object> createConsumerDepositConfig() {
         final Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         return config;
     }
 
     public Map<String, Object> createConsumerApplicantConfig() {
         final Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         return config;
     }
 
     @Bean(name = "depositBean")
     public ConsumerFactory<String, DepositDto> createConsumerDepositFactory() {
         final JsonDeserializer<DepositDto> jsonDeserializer = new JsonDeserializer<>();
-        jsonDeserializer.addTrustedPackages("com.scoring.commons");
+        jsonDeserializer.addTrustedPackages("com.scoring.commons.*");
         return new DefaultKafkaConsumerFactory<>(createConsumerDepositConfig(),
                 new StringDeserializer(),
                 jsonDeserializer);
@@ -48,7 +57,7 @@ public class KafkaConsumerConfiguration {
     @Bean(name = "applicantBean")
     public ConsumerFactory<String, ApplicantDto> createConsumerApplicantFactory() {
         final JsonDeserializer<ApplicantDto> jsonDeserializer = new JsonDeserializer<>();
-        jsonDeserializer.addTrustedPackages("com.scoring.commons");
+        jsonDeserializer.addTrustedPackages("com.scoring.commons.*");
         return new DefaultKafkaConsumerFactory<>(createConsumerApplicantConfig(),
                 new StringDeserializer(),
                 jsonDeserializer);
@@ -60,6 +69,8 @@ public class KafkaConsumerConfiguration {
         final ConcurrentKafkaListenerContainerFactory<String, DepositDto> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(createConsumerDepositFactory);
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
+        factory.getContainerProperties().setGroupId(depositGroupId);
         return factory;
     }
 
@@ -69,6 +80,8 @@ public class KafkaConsumerConfiguration {
         final ConcurrentKafkaListenerContainerFactory<String, ApplicantDto> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(createConsumerApplicantFactory);
+        factory.getContainerProperties().setGroupId(applicantGroupId);
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
         return factory;
     }
 }

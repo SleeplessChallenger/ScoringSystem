@@ -18,7 +18,9 @@ spring:
   liquibase:
     change-log: 'classpath:db/changelog/changelog-final-checks.yaml'
   kafka:
-    bootstrap-servers: 'localhost:9092'
+    bootstrap-servers: localhost:29092
+    consumer:
+      auto-offset-reset: earliest
   application:
     name: final-checks
   datasource:
@@ -32,7 +34,7 @@ spring:
         format_sql: 'true'
     hibernate:
       ddl-auto: create-drop
-      show-sql: 'true'
+    show-sql: true
   zipkin:
     base-url: 'http://localhost:9411'
 
@@ -47,6 +49,7 @@ kafka-custom:
   applicant:
     groupId: 'applicant'
     topic: 'applicant-topic'
+  retry-duration: 150
 
 eureka:
   instance:

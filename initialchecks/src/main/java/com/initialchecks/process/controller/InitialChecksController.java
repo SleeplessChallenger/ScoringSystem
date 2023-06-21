@@ -38,6 +38,7 @@ public class InitialChecksController {
             // Accept request from Tomcat and give to Java Executor. Don't wait and give response
             initialChecksService.checkApplication(applicationCheck);
         } catch (RuntimeException ex) {
+            log.error("ERROR during persisting application: applicant = {}, deposit = {}", applicantId, depositId);
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(ex.getMessage());
