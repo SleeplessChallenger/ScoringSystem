@@ -16,10 +16,12 @@ public class ApplicantConsumer {
 
     @RabbitListener(queues = "${rabbitmq.queues.applicant-models}")
     public void consume(ApplicantDto applicant) {
-        log.info("Consumed applicant with applicantId = {}", applicant.getApplicantId());
+        final String applicantId = applicant.getApplicantId();
+        log.info("Consumed applicant with applicantId = {}", applicantId);
         try {
             modelService.scoreApplicant(applicant);
         } catch (RuntimeException ex) {
+            log.error("ERROR during scoring applicant = {}", applicantId);
             // TODO: do something if error occurred during checking applicant
         }
     }

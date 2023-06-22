@@ -24,6 +24,7 @@ public class InitialChecksController {
     @PostMapping(path = "{requestId}")
     public ResponseEntity<String> checkApplication(@PathVariable @NotBlank String requestId,
                                                    @RequestBody @Valid ApplicationRequest applicationRequest) {
+        log.info("Accepted request = {} in Initial-Checks", requestId);
         final String applicantId = applicationRequest.getApplicantId();
         final String depositId = applicationRequest.getDepositId();
 

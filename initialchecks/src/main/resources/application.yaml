@@ -5,10 +5,14 @@ management:
   tracing:
     enabled: true
     sampling.probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include: '*'
 
   zipkin.tracing.endpoint: 'http://localhost:9411/api/v2/spans'
 
-logging.pattern.level: "trace_id=%mdc{traceId} span_id=%mdc{spanId} trace_flags=%mdc{traceFlags} %p"
+logging.pattern.level: '%5p [application-name: ${spring.application.name:}, traceId: %X{traceId:-}, spanId: %X{spanId:-}]'
 
 spring:
   liquibase:
@@ -36,15 +40,6 @@ app:
   executor:
     threadsPerProcessor: 10
 
-eureka:
-  instance:
-    hostname: localhost
-  client:
-    service-url:
-      defaultZone: 'http://localhost:8761/eureka'
-    fetch-registry: true
-    register-with-eureka: true
-
 rabbitmq:
   exchanges:
     internal: internal.exchange
@@ -54,3 +49,12 @@ rabbitmq:
   routing-keys:
     internal-applicant: internal.applicant.routing-key
     internal-deposit: internal.deposit.routing-key
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: 'http://localhost:8761/eureka'
+    fetch-registry: true
+    register-with-eureka: true

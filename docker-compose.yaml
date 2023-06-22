@@ -69,6 +69,8 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    volumes:
+      - "./data:/var/lib/rabbitmq/mnesia/"
     networks:
       - spring
   zookeeper:
@@ -86,10 +88,9 @@ services:
       - spring
   kafka:
     image: confluentinc/cp-kafka:latest
-    container_name: kafka-container
+#    container_name: kafka-container
     ports:
       - "29092:29092"
-      - "9092:9092"
     volumes:
       - ./tmp/docker/kafka/data:/var/lib/kafka/data
     environment:

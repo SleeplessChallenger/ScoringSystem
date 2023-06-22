@@ -20,7 +20,6 @@ public class DecisionService {
     private final DepositDecisionRepository depositDecisionRepository;
     private final ApplicantDecisionRepository applicantDecisionRepository;
 
-
     @Transactional
     public void persistApplicantDecision(ApplicantDto applicant) {
         final ApplicantDecisionEntity applicantDecision = ApplicantDecisionEntity.builder()
