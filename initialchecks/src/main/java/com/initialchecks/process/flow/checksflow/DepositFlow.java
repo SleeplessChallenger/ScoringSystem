@@ -29,10 +29,10 @@ public class DepositFlow extends CheckFlow {
     );
 
     @Value("${rabbitmq.exchanges.internal}")
-    private String applicantExchange;
+    private String depositExchange;
 
     @Value("${rabbitmq.routing-keys.internal-deposit}")
-    private String applicantRoutingKey;
+    private String depositRoutingKey;
 
     private final MessageProducer<DepositDto> messageProducer;
 
@@ -44,12 +44,12 @@ public class DepositFlow extends CheckFlow {
     @Override
     public void sendDataToQueue(FlowContext flowContext) {
         log.info("Data has been sent to RabbitMQ exchange = {} using routing key = {}. Flow = {}",
-                applicantExchange, applicantRoutingKey, flowContext.getFlowName());
+                depositExchange, depositRoutingKey, flowContext.getFlowName());
         final DepositDto deposit = DepositDto.builder()
                 .flowUniqueId(flowContext.getFlowUniqueId())
                 .depositId(flowContext.getApplicationCheck().getDepositId())
                 .build();
-        messageProducer.publish(deposit, applicantExchange, applicantRoutingKey);
+        messageProducer.publish(deposit, depositExchange, depositRoutingKey);
     }
 
     @Override

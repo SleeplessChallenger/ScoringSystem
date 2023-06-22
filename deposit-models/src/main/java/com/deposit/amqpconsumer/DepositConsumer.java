@@ -16,10 +16,12 @@ public class DepositConsumer {
 
     @RabbitListener(queues = "${rabbitmq.queues.deposit-models}")
     public void consume(DepositDto deposit) {
-        log.info("Consumed deposit with depositId = {}", deposit.getDepositId());
+        final String depositId = deposit.getDepositId();
+        log.info("Consumed deposit with depositId = {}", depositId);
         try {
             modelService.scoreDeposit(deposit);
         } catch (RuntimeException ex) {
+            log.error("ERROR during scoring deposit = {}", depositId);
             // TODO: do something if error occurred during checking applicant
         }
     }

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -38,6 +39,9 @@ public class KafkaApplicantConsumer {
         log.info("Consumed data from topic = {} using groupId = {}", topic, groupId);
         try {
             decisionService.persistApplicantDecision(applicant);
+            acknowledgment.acknowledge();
+        } catch (DataIntegrityViolationException ex) {
+            log.error("Duplicate data found applicant = {}. Acknowledging data", applicant.getApplicantId(), ex);
             acknowledgment.acknowledge();
         } catch (PersistenceException | DataAccessException ex) {
             log.error("Error during persisting applicant = {} to the database. Making retry", applicant.getApplicantId(), ex);
